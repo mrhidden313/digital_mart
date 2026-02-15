@@ -7,7 +7,7 @@ const Footer = () => {
                 <div className="footer-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem' }}>
                     <div>
                         <h3 className="outfit" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
-                            <span style={{ color: 'white' }}>Night</span><span style={{ color: 'var(--primary)' }}>Store</span>
+                            <span style={{ color: 'white' }}>Digital</span><span style={{ color: 'var(--primary)' }}> Super Mart</span>
                         </h3>
                         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Premium Software, VPNs & Courses at unbeatable prices.</p>
                     </div>
