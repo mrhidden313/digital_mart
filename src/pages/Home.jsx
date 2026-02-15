@@ -158,7 +158,7 @@ const Home = () => {
                                 style={{ marginTop: '3rem', padding: 'clamp(1.5rem, 4vw, 2.5rem)', borderRadius: '24px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(22,163,74,0.1), rgba(251,191,36,0.05))', border: '1px solid rgba(22,163,74,0.3)' }}
                             >
                                 <h3 className="outfit" style={{ fontSize: 'clamp(1.3rem, 3vw, 1.8rem)', marginBottom: '0.5rem' }}>
-                                    🔥 Limited Time Offer — Hurry Up!
+                                    Limited Time Offer — Hurry Up!
                                 </h3>
 
                                 {/* Countdown Timer */}

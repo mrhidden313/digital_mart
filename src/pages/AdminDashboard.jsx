@@ -71,7 +71,7 @@ const AdminDashboard = () => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setFormData(prev => ({ ...prev, image: reader.result }));
-                toast.success('Image loaded! 🖼️');
+                toast.success('Image loaded!');
             };
             reader.readAsDataURL(file);
         }
@@ -118,7 +118,7 @@ const AdminDashboard = () => {
                 setTimeout(() => {
                     setUploading(false);
                     setUploadProgress(0);
-                    toast.success('Product updated successfully! ✅');
+                    toast.success('Product updated successfully!');
                 }, 500);
                 setEditingId(null);
             } else {
@@ -128,7 +128,7 @@ const AdminDashboard = () => {
                 setTimeout(() => {
                     setUploading(false);
                     setUploadProgress(0);
-                    toast.success('Product published! 🚀');
+                    toast.success('Product published!');
                 }, 500);
             }
 
@@ -146,22 +146,41 @@ const AdminDashboard = () => {
 
     return (
         <div className="container" style={{ padding: '6rem 1rem 3rem' }}>
-            <h1 className="outfit" style={{ marginBottom: '1.5rem', fontSize: 'clamp(1.4rem, 4vw, 2.2rem)' }}>📚 Digital Super Mart Admin</h1>
+            <h1 className="outfit" style={{ marginBottom: '1.5rem', fontSize: 'clamp(1.4rem, 4vw, 2.2rem)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Layout size={32} className="text-gradient" /> Digital Super Mart Admin
+            </h1>
 
             {/* Tab Buttons */}
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto' }}>
-                {[
-                    { id: 'add', label: editingId ? '✏️ Edit Product' : '➕ Add Product' },
-                    { id: 'manage', label: '📦 Inventory' },
-                    { id: 'categories', label: '🏷️ Category Deals' },
-                    { id: 'settings', label: '⚙️ Settings' }
-                ].map(tab => (
-                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
-                        padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid var(--glass-border)',
-                        background: activeTab === tab.id ? 'var(--primary)' : 'rgba(255,255,255,0.03)',
-                        color: 'white', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap', fontWeight: activeTab === tab.id ? '600' : '400'
-                    }}>{tab.label}</button>
-                ))}
+
+                <button onClick={() => setActiveTab('add')} className={`tab-btn ${activeTab === 'add' ? 'active' : ''}`} style={{
+                    padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid var(--glass-border)',
+                    background: activeTab === 'add' ? 'var(--primary)' : 'rgba(255,255,255,0.03)',
+                    color: 'white', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap', fontWeight: activeTab === 'add' ? '600' : '400'
+                }}>
+                    {editingId ? <><Pencil size={18} /> Edit Product</> : <><PlusCircle size={18} /> Add Product</>}
+                </button>
+                <button onClick={() => setActiveTab('manage')} className={`tab-btn ${activeTab === 'manage' ? 'active' : ''}`} style={{
+                    padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid var(--glass-border)',
+                    background: activeTab === 'manage' ? 'var(--primary)' : 'rgba(255,255,255,0.03)',
+                    color: 'white', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap', fontWeight: activeTab === 'manage' ? '600' : '400'
+                }}>
+                    <Package size={18} /> Inventory
+                </button>
+                <button onClick={() => setActiveTab('categories')} className={`tab-btn ${activeTab === 'categories' ? 'active' : ''}`} style={{
+                    padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid var(--glass-border)',
+                    background: activeTab === 'categories' ? 'var(--primary)' : 'rgba(255,255,255,0.03)',
+                    color: 'white', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap', fontWeight: activeTab === 'categories' ? '600' : '400'
+                }}>
+                    <Tag size={18} /> Category Deals
+                </button>
+                <button onClick={() => setActiveTab('settings')} className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`} style={{
+                    padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid var(--glass-border)',
+                    background: activeTab === 'settings' ? 'var(--primary)' : 'rgba(255,255,255,0.03)',
+                    color: 'white', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap', fontWeight: activeTab === 'settings' ? '600' : '400'
+                }}>
+                    <Settings size={18} /> Settings
+                </button>
             </div>
 
             {/* ADD / EDIT PRODUCT TAB */}
@@ -261,11 +280,11 @@ const AdminDashboard = () => {
                                         borderRadius: '8px'
                                     }} />
                                     <span style={{ position: 'relative', zIndex: 1 }}>
-                                        {uploadProgress === 100 ? '✅ Done!' : `⏳ Uploading... ${Math.min(uploadProgress, 100)}%`}
+                                        {uploadProgress === 100 ? 'Completed' : `Uploading... ${Math.min(uploadProgress, 100)}%`}
                                     </span>
                                 </>
                             ) : (
-                                editingId ? 'Update Product 🔄' : 'Publish Deal 🚀'
+                                editingId ? 'Update Product' : 'Publish Deal'
                             )}
                         </button>
                     </form>
@@ -275,13 +294,13 @@ const AdminDashboard = () => {
             {/* MANAGE PRODUCTS TAB */}
             {activeTab === 'manage' && (
                 <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '18px' }}>
-                    <h2 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>📦 Inventory ({books.length})</h2>
+                    <h2 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Inventory ({books.length})</h2>
 
                     {/* Category filters */}
                     <div style={{ display: 'flex', gap: '0.3rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
                         {CATEGORIES.map(cat => (
                             <span key={cat} style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)' }}>
-                                {cat === 'All' ? `All (${books.length})` : `${cat} (${countByCategory(cat)})`}
+                                {cat === 'All' ? `All (${books.length})` : `${cat} (${countByCategory(cat)} items)`}
                             </span>
                         ))}
                     </div>
@@ -299,7 +318,7 @@ const AdminDashboard = () => {
             {/* CATEGORY BUTTONS TAB */}
             {activeTab === 'categories' && (
                 <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '18px' }}>
-                    <h2 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>🏷️ Category Deals</h2>
+                    <h2 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Category Deals</h2>
 
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -372,7 +391,7 @@ const AdminDashboard = () => {
                         <h4 style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#25D366', fontSize: '0.9rem' }}><MessageCircle size={14} /> WhatsApp Group Link</h4>
                         <div style={{ display: 'flex', gap: '0.4rem' }}>
                             <input placeholder="https://chat.whatsapp.com/..." value={tempGroupLink} onChange={e => setTempGroupLink(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                            <button onClick={() => { updateWhatsappGroup(tempGroupLink); toast.success('Group link saved! ✅'); }} className="btn whatsapp-btn" style={{ padding: '0.4rem 0.7rem' }}><MessageCircle size={14} /></button>
+                            <button onClick={() => { updateWhatsappGroup(tempGroupLink); toast.success('Group link saved!'); }} className="btn whatsapp-btn" style={{ padding: '0.4rem 0.7rem' }}><MessageCircle size={14} /></button>
                         </div>
                         <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Shows on About page. Leave empty to hide.</p>
                     </div>

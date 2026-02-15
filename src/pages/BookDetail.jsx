@@ -67,7 +67,7 @@ const BookDetail = () => {
                 <div style={{ marginTop: '3rem', padding: 'clamp(1.2rem, 3vw, 3rem)', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: '1px solid var(--glass-border)', textAlign: 'center' }}>
                     {book.type === 'paid' ? (
                         <>
-                            <h2 className="outfit" style={{ marginBottom: '1rem' }}>⚡ Unlock Premium Access</h2>
+                            <h2 className="outfit" style={{ marginBottom: '1rem' }}>Unlock Premium Access</h2>
                             <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', maxWidth: '500px', margin: '0 auto 1.5rem' }}>
                                 Get instant access to {book.title} with full warranty and support.
                             </p>
@@ -84,7 +84,7 @@ const BookDetail = () => {
                         </>
                     ) : (
                         <>
-                            <h2 className="outfit" style={{ marginBottom: '1rem' }}>🎁 Get This For Free</h2>
+                            <h2 className="outfit" style={{ marginBottom: '1rem' }}>Get This For Free</h2>
                             {canDownload ? (
                                 <a
                                     href={whatsappLink}
