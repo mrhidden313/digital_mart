@@ -41,12 +41,12 @@ const Home = () => {
                 book.tags?.some(tag => tag.toLowerCase().includes(search.toLowerCase())))
         );
 
-    const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('I want to buy book')}`;
+    const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('I want to buy a product')}`;
 
     // Get the button config for current category
     const catButton = categoryButtons[activeCategory] || null;
     const catButtonLink = catButton
-        ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(catButton.message || `I want to see all ${activeCategory} books`)}`
+        ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(catButton.message || `I want to see all ${activeCategory} products`)}`
         : null;
 
     return (

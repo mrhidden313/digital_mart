@@ -49,6 +49,8 @@ const AdminDashboard = () => {
     const [tempWhatsapp, setTempWhatsapp] = useState(whatsappNumber || WHATSAPP_NUMBER);
     const [tempGroupLink, setTempGroupLink] = useState(whatsappGroup || '');
     const [activeTab, setActiveTab] = useState('add');
+    const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
 
@@ -58,7 +60,7 @@ const AdminDashboard = () => {
             const oldIndex = books.findIndex(b => b.id === active.id);
             const newIndex = books.findIndex(b => b.id === over.id);
             reorderBooks(arrayMove(books, oldIndex, newIndex));
-            toast.success('Book order updated');
+            toast.success('Product order updated');
         }
     };
 
@@ -98,18 +100,43 @@ const AdminDashboard = () => {
         const tagsArray = formData.tags.toString().split(',').map(t => t.trim());
         const bookData = { ...formData, tags: tagsArray };
 
+        setUploading(true);
+        setUploadProgress(0);
+
+        const progressInterval = setInterval(() => {
+            setUploadProgress(prev => {
+                if (prev >= 90) { clearInterval(progressInterval); return 90; }
+                return prev + Math.floor(Math.random() * 15) + 5;
+            });
+        }, 200);
+
         try {
             if (editingId) {
                 await updateBook({ ...bookData, id: editingId });
-                toast.success('Book updated successfully! ✅');
+                clearInterval(progressInterval);
+                setUploadProgress(100);
+                setTimeout(() => {
+                    setUploading(false);
+                    setUploadProgress(0);
+                    toast.success('Product updated successfully! ✅');
+                }, 500);
                 setEditingId(null);
             } else {
                 await addBook(bookData);
-                toast.success('Book published! 📚');
+                clearInterval(progressInterval);
+                setUploadProgress(100);
+                setTimeout(() => {
+                    setUploading(false);
+                    setUploadProgress(0);
+                    toast.success('Product published! 🚀');
+                }, 500);
             }
 
             setFormData({ title: '', excerpt: '', content: '', image: '', category: CATEGORIES[1], tags: '', type: 'free', author: 'Supermart', price: '', whatsappText: '' });
         } catch (error) {
+            clearInterval(progressInterval);
+            setUploading(false);
+            setUploadProgress(0);
             toast.error('Operation failed. Please try again.');
         }
     };
@@ -223,8 +250,23 @@ const AdminDashboard = () => {
                                 <ReactQuill theme="snow" value={formData.content} onChange={val => setFormData({ ...formData, content: val })} style={{ height: '220px', marginBottom: '2rem' }} />
                             )}
                         </div>
-                        <button type="submit" className="btn btn-primary" style={{ justifyContent: 'center', padding: '0.7rem' }}>
-                            {editingId ? 'Update Product 🔄' : 'Publish Deal 🚀'}
+                        <button type="submit" disabled={uploading} className="btn btn-primary" style={{ justifyContent: 'center', padding: '0.7rem', position: 'relative', overflow: 'hidden', opacity: uploading ? 0.9 : 1 }}>
+                            {uploading ? (
+                                <>
+                                    <div style={{
+                                        position: 'absolute', left: 0, top: 0, height: '100%',
+                                        width: `${uploadProgress}%`,
+                                        background: uploadProgress === 100 ? 'rgba(34, 197, 94, 0.3)' : 'rgba(255,255,255,0.15)',
+                                        transition: 'width 0.3s ease, background 0.3s ease',
+                                        borderRadius: '8px'
+                                    }} />
+                                    <span style={{ position: 'relative', zIndex: 1 }}>
+                                        {uploadProgress === 100 ? '✅ Done!' : `⏳ Uploading... ${Math.min(uploadProgress, 100)}%`}
+                                    </span>
+                                </>
+                            ) : (
+                                editingId ? 'Update Product 🔄' : 'Publish Deal 🚀'
+                            )}
                         </button>
                     </form>
                 </div>
