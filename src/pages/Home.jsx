@@ -19,17 +19,17 @@ const Home = () => {
     useEffect(() => {
         const timer = setInterval(() => {
             setTimeLeft(prev => {
-                if (prev <= 10) return 2 * 60 * 60 * 1000; // Reset to 2 hours
-                return prev - 10;
+                if (prev <= 1000) return 2 * 60 * 60 * 1000; // Reset
+                return prev - 1000;
             });
-        }, 10);
+        }, 1000);
         return () => clearInterval(timer);
     }, []);
 
     const hours = String(Math.floor(timeLeft / 3600000)).padStart(2, '0');
     const minutes = String(Math.floor((timeLeft % 3600000) / 60000)).padStart(2, '0');
     const seconds = String(Math.floor((timeLeft % 60000) / 1000)).padStart(2, '0');
-    const centiseconds = String(Math.floor((timeLeft % 1000) / 10)).padStart(2, '0');
+    // const centiseconds = String(Math.floor((timeLeft % 1000) / 10)).padStart(2, '0');
 
     // If loading, show Loader inside the grid area, not full screen
     // if (loading) return <Loader fullScreen={false} />; 
@@ -163,7 +163,7 @@ const Home = () => {
 
                                 {/* Countdown Timer */}
                                 <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-                                    {[{ label: 'HRS', value: hours }, { label: 'MIN', value: minutes }, { label: 'SEC', value: seconds }, { label: 'MS', value: centiseconds }].map((unit, i) => (
+                                    {[{ label: 'HRS', value: hours }, { label: 'MIN', value: minutes }, { label: 'SEC', value: seconds }].map((unit, i) => (
                                         <motion.div
                                             key={unit.label}
                                             animate={{ scale: [1, 1.05, 1] }}

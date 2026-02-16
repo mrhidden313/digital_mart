@@ -58,7 +58,7 @@ const BookCard = ({ book, index = 0 }) => {
                     top: '10px',
                     right: '10px',
                     background: 'rgba(0,0,0,0.6)',
-                    backdropFilter: 'blur(4px)',
+                    // backdropFilter: 'blur(4px)', // Performance optimization
                     padding: '4px 10px',
                     borderRadius: '20px',
                     fontSize: '0.75rem',
