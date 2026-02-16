@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { BookContext, CATEGORIES, WHATSAPP_NUMBER } from '../context/BookContext';
-import { Trash2, PlusCircle, Layout, GripVertical, Code, Eye, Image as ImageIcon, Phone, MessageCircle, Settings, RotateCcw, Pencil } from 'lucide-react';
+import { Trash2, PlusCircle, Layout, GripVertical, Code, Eye, Image as ImageIcon, Phone, MessageCircle, Settings, RotateCcw, Pencil, Package, Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import ReactQuill from 'react-quill';
