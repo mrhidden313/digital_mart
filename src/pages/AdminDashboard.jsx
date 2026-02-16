@@ -39,9 +39,9 @@ const SortableBook = ({ book, onDelete, onEdit }) => {
 };
 
 const AdminDashboard = () => {
-    const { books, addBook, updateBook, deleteBook, logo, updateLogo, reorderBooks, whatsappNumber, updateWhatsappNumber, whatsappGroup, updateWhatsappGroup, categoryButtons, updateCategoryButton, resetToDefaults } = useContext(BookContext);
+    const { books, addBook, updateBook, deleteBook, logo, updateLogo, reorderBooks, whatsappNumber, updateWhatsappNumber, whatsappGroup, updateWhatsappGroup, categoryButtons, updateCategoryButton, resetToDefaults, categories, customCategories, addCategory, deleteCategory } = useContext(BookContext);
     const [formData, setFormData] = useState({
-        title: '', excerpt: '', content: '', image: '', category: CATEGORIES[1], tags: '', type: 'free', author: 'Supermart', price: '', whatsappText: ''
+        title: '', excerpt: '', content: '', image: '', category: categories[1] || 'Free', tags: '', type: 'free', author: 'Supermart', price: '', whatsappText: ''
     });
     const [editingId, setEditingId] = useState(null);
     const [codeView, setCodeView] = useState(false);
@@ -51,6 +51,7 @@ const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('add');
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [newCatName, setNewCatName] = useState('');
 
     const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
 
@@ -131,8 +132,8 @@ const AdminDashboard = () => {
                     toast.success('Product published!');
                 }, 500);
             }
-
-            setFormData({ title: '', excerpt: '', content: '', image: '', category: CATEGORIES[1], tags: '', type: 'free', author: 'Supermart', price: '', whatsappText: '' });
+            // Reset form
+            setFormData({ title: '', excerpt: '', content: '', image: '', category: categories[1] || 'Free', tags: '', type: 'free', author: 'Supermart', price: '', whatsappText: '' });
         } catch (error) {
             clearInterval(progressInterval);
             setUploading(false);
@@ -236,7 +237,7 @@ const AdminDashboard = () => {
                                 onChange={e => setFormData({ ...formData, category: e.target.value })}
                                 style={{ ...inputStyle, cursor: 'pointer' }}
                             >
-                                {CATEGORIES.filter(c => c !== 'All').map(cat => (
+                                {categories.filter(c => c !== 'All').map(cat => (
                                     <option key={cat} value={cat}>{cat}</option>
                                 ))}
                             </select>
@@ -298,7 +299,7 @@ const AdminDashboard = () => {
 
                     {/* Category filters */}
                     <div style={{ display: 'flex', gap: '0.3rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                        {CATEGORIES.map(cat => (
+                        {categories.map(cat => (
                             <span key={cat} style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)' }}>
                                 {cat === 'All' ? `All (${books.length})` : `${cat} (${countByCategory(cat)} items)`}
                             </span>
@@ -318,15 +319,64 @@ const AdminDashboard = () => {
             {/* CATEGORY BUTTONS TAB */}
             {activeTab === 'categories' && (
                 <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '18px' }}>
-                    <h2 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Category Deals</h2>
 
+                    {/* ADD NEW CATEGORY */}
+                    <div style={{ marginBottom: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)' }}>
+                        <h2 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Manage Categories</h2>
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                            <input
+                                placeholder="New Category Name (e.g. VPNs)"
+                                value={newCatName}
+                                onChange={e => setNewCatName(e.target.value)}
+                                style={{ ...inputStyle, flex: 1 }}
+                            />
+                            <button
+                                onClick={() => {
+                                    if (newCatName.trim()) {
+                                        addCategory(newCatName.trim());
+                                        setNewCatName('');
+                                        toast.success('Category added');
+                                    }
+                                }}
+                                className="btn btn-primary"
+                                style={{ padding: '0.5rem 1rem' }}
+                            >
+                                <PlusCircle size={18} /> Add
+                            </button>
+                        </div>
+                    </div>
+
+                    <h2 style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Category Deals & Buttons</h2>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        {CATEGORIES.filter(c => c !== 'All').map(cat => {
+                        {categories.filter(c => c !== 'All').map(cat => {
                             const btn = categoryButtons[cat] || { text: '', price: '', message: '' };
+                            const isFixed = ['Free', 'Paid'].includes(cat);
                             return (
                                 <div key={cat} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)', padding: '1rem', borderRadius: '12px' }}>
-                                    <h4 style={{ marginBottom: '0.6rem', fontSize: '0.9rem', color: 'var(--primary)' }}>{cat} <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>({countByCategory(cat)} items)</span></h4>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                                        <h4 style={{ fontSize: '0.9rem', color: 'var(--primary)' }}>{cat} <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>({countByCategory(cat)} items)</span></h4>
+
+                                        {!isFixed && (
+                                            <button
+                                                onClick={() => {
+                                                    if (window.confirm(`Delete category "${cat}"? Products in this category will remain but filter will be removed.`)) {
+                                                        const catObj = customCategories.find(c => c.name === cat);
+                                                        if (catObj) {
+                                                            deleteCategory(catObj.id, cat);
+                                                            toast.success('Category deleted');
+                                                        } else {
+                                                            toast.error('Error finding category ID');
+                                                        }
+                                                    }
+                                                }}
+                                                className="btn"
+                                                style={{ padding: '0.3rem', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)' }}
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        )}
+                                    </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                                         <input
                                             placeholder="Button Text (e.g. View All Deals)"
