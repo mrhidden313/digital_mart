@@ -3,7 +3,9 @@ import {
     getBooks, addBookAPI, updateBookAPI, deleteBookAPI, reorderBooksAPI,
     getSettings, saveSettings,
     getCategoryButtons, saveCategoryButtons, resetToDefaults,
-    getCategoriesAPI, addCategoryAPI, deleteCategoryAPI
+
+    getCategoriesAPI, addCategoryAPI, deleteCategoryAPI, updateCategoryAPI,
+    getTrashAPI, moveToTrashAPI, restoreBookAPI, permanentDeleteBookAPI, emptyTrashAPI
 } from '../services/api';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'; // Direct import from SDK
 import { auth } from '../services/firebase'; // Import initialized auth instance
@@ -21,6 +23,7 @@ export const WHATSAPP_NUMBER = '923301980891';
 
 export const BookProvider = ({ children }) => {
     const [books, setBooks] = useState([]);
+    const [trash, setTrash] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     const [authLoading, setAuthLoading] = useState(true);
@@ -54,6 +57,12 @@ export const BookProvider = ({ children }) => {
         };
         fetchCategories();
 
+        const fetchTrash = async () => {
+            const trashData = await getTrashAPI();
+            setTrash(trashData);
+        };
+        fetchTrash();
+
         const settings = getSettings();
         setLogo(settings.logo || '');
         setWhatsappNumber(settings.whatsappNumber || WHATSAPP_NUMBER);
@@ -81,10 +90,45 @@ export const BookProvider = ({ children }) => {
 
     const deleteBook = async (id) => {
         try {
-            await deleteBookAPI(id);
-            setBooks(prev => prev.filter(b => b.id !== id));
+            const bookToDelete = books.find(b => b.id === id);
+            if (bookToDelete) {
+                await moveToTrashAPI(bookToDelete);
+                setBooks(prev => prev.filter(b => b.id !== id));
+                setTrash(prev => [bookToDelete, ...prev]);
+            }
         } catch (e) {
-            console.error("Failed to delete book", e);
+            console.error("Failed to move book to trash", e);
+        }
+    };
+
+    const restoreBook = async (id) => {
+        try {
+            const bookToRestore = trash.find(b => b.id === id);
+            if (bookToRestore) {
+                await restoreBookAPI(bookToRestore);
+                setTrash(prev => prev.filter(b => b.id !== id));
+                setBooks(prev => [bookToRestore, ...prev]);
+            }
+        } catch (e) {
+            console.error("Failed to restore book", e);
+        }
+    };
+
+    const permanentDeleteBook = async (id) => {
+        try {
+            await permanentDeleteBookAPI(id);
+            setTrash(prev => prev.filter(b => b.id !== id));
+        } catch (e) {
+            console.error("Failed to permanently delete book", e);
+        }
+    };
+
+    const emptyTrash = async () => {
+        try {
+            await emptyTrashAPI();
+            setTrash([]);
+        } catch (e) {
+            console.error("Failed to empty trash", e);
         }
     };
 
@@ -128,12 +172,44 @@ export const BookProvider = ({ children }) => {
         }
     };
 
+    const updateCategory = async (id, oldName, newName) => {
+        try {
+            await updateCategoryAPI(id, newName);
+            setCustomCategories(prev => prev.map(c => c.id === id ? { ...c, name: newName } : c));
+            setCategories(prev => prev.map(c => c === oldName ? newName : c));
+            if (activeCategory === oldName) setActiveCategory(newName);
+
+            const booksToUpdate = books.filter(b => b.category === oldName);
+            const updatePromises = booksToUpdate.map(b => updateBookAPI({ ...b, category: newName }));
+            await Promise.all(updatePromises);
+
+            setBooks(prev => prev.map(b => b.category === oldName ? { ...b, category: newName } : b));
+
+        } catch (e) {
+            console.error("Failed to update category", e);
+        }
+    };
+
     const deleteCategory = async (id, name) => {
         try {
-            await deleteCategoryAPI(id);
+            const deletedCat = await deleteCategoryAPI(id);
+
             setCustomCategories(prev => prev.filter(c => c.id !== id));
             setCategories(prev => prev.filter(c => c !== name));
             if (activeCategory === name) setActiveCategory('All');
+
+            if (deletedCat) {
+                setTrash(prev => [{ ...deletedCat, title: `Category: ${deletedCat.name}` }, ...prev]);
+            }
+
+            const booksToDelete = books.filter(b => b.category === name);
+            if (booksToDelete.length > 0) {
+                const deletePromises = booksToDelete.map(b => moveToTrashAPI(b));
+                await Promise.all(deletePromises);
+                setBooks(prev => prev.filter(b => b.category !== name));
+                setTrash(prev => [...booksToDelete, ...prev]);
+            }
+
         } catch (e) {
             console.error("Failed to delete category", e);
         }
@@ -172,14 +248,16 @@ export const BookProvider = ({ children }) => {
 
     return (
         <BookContext.Provider value={{
-            books, loading, addBook, updateBook, deleteBook, reorderBooks,
+            books, trash, loading, addBook, updateBook, deleteBook, reorderBooks,
+            restoreBook, permanentDeleteBook, emptyTrash,
             isAdmin, authLoading, login, logout,
             logo, updateLogo,
             whatsappNumber, updateWhatsappNumber,
             whatsappGroup, updateWhatsappGroup,
             categoryButtons, updateCategoryButton,
             activeCategory, setActiveCategory,
-            categories, customCategories, addCategory, deleteCategory, // Exposed
+
+            categories, customCategories, addCategory, deleteCategory, updateCategory,
             resetToDefaults
         }}>
             {children}

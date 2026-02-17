@@ -1,4 +1,5 @@
 import { db, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from './firebase';
+import { setDoc, getDoc, where } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'products';
 const SETTINGS_KEY = 'nightstore_settings'; // Keep settings local for now or move to DB later
@@ -112,12 +113,98 @@ export const addCategoryAPI = async (name) => {
     }
 };
 
+export const updateCategoryAPI = async (id, newName) => {
+    try {
+        await updateDoc(doc(db, CATEGORIES_COLLECTION, id), { name: newName });
+        return { id, name: newName };
+    } catch (error) {
+        console.error("Error updating category:", error);
+        throw error;
+    }
+};
+
 export const deleteCategoryAPI = async (id) => {
     try {
-        await deleteDoc(doc(db, 'categories', id));
-        return id;
+        const catDoc = await getDoc(doc(db, CATEGORIES_COLLECTION, id));
+        if (catDoc.exists()) {
+            const catData = { id: catDoc.id, ...catDoc.data(), type: 'category', deletedAt: new Date().toISOString() };
+            await setDoc(doc(db, TRASH_COLLECTION, id), catData);
+            await deleteDoc(doc(db, CATEGORIES_COLLECTION, id));
+            return catData;
+        }
+        return null;
     } catch (error) {
         console.error("Error deleting category:", error);
+        throw error;
+    }
+};
+
+// ===== TRASH SYSTEM =====
+
+const TRASH_COLLECTION = 'trash';
+
+export const getTrashAPI = async () => {
+    try {
+        const q = query(collection(db, TRASH_COLLECTION));
+        const querySnapshot = await getDocs(q);
+        const trash = [];
+        querySnapshot.forEach((doc) => {
+            trash.push({ id: doc.id, ...doc.data() });
+        });
+        return trash;
+    } catch (error) {
+        console.error("Error getting trash: ", error);
+        return [];
+    }
+};
+
+export const moveToTrashAPI = async (book) => {
+    try {
+        const { id, ...bookData } = book;
+        await setDoc(doc(db, TRASH_COLLECTION, id), { ...bookData, deletedAt: new Date().toISOString() });
+        await deleteDoc(doc(db, COLLECTION_NAME, id));
+        return id;
+    } catch (error) {
+        console.error("Error moving to trash: ", error);
+        throw error;
+    }
+};
+
+export const restoreBookAPI = async (item) => {
+    try {
+        const { id, ...data } = item;
+        const { deletedAt, type, ...rest } = data;
+
+        const targetCollection = (type === 'category') ? CATEGORIES_COLLECTION : COLLECTION_NAME;
+
+        await setDoc(doc(db, targetCollection, id), rest);
+        await deleteDoc(doc(db, TRASH_COLLECTION, id));
+        return { id, ...rest, type };
+    } catch (error) {
+        console.error("Error restoring item: ", error);
+        throw error;
+    }
+};
+
+export const permanentDeleteBookAPI = async (id) => {
+    try {
+        await deleteDoc(doc(db, TRASH_COLLECTION, id));
+        return id;
+    } catch (error) {
+        console.error("Error permanently deleting: ", error);
+        throw error;
+    }
+};
+
+export const emptyTrashAPI = async () => {
+    try {
+        const q = query(collection(db, TRASH_COLLECTION));
+        const querySnapshot = await getDocs(q);
+        const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(deletePromises);
+        return true;
+    } catch (error) {
+        console.error("Error emptying trash: ", error);
         throw error;
     }
 };
