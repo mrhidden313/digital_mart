@@ -10,9 +10,11 @@ import SEO from '../components/SEO';
 import Loader from '../components/Loader';
 
 const Home = () => {
-    const { books, activeCategory, categoryButtons, loading } = useContext(BookContext);
+    const { books, allBooks, activeCategory, setActiveCategory, categoryButtons, loading, loadingMore, hasMore, customCategories } = useContext(BookContext);
     const [search, setSearch] = useState('');
-
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [expandedParents, setExpandedParents] = useState({}); // Toggles for sidebar accordions
     // 2-hour countdown timer (loops)
     const [timeLeft, setTimeLeft] = useState(2 * 60 * 60 * 1000); // 2 hours in ms
 
@@ -35,11 +37,16 @@ const Home = () => {
     // if (loading) return <Loader fullScreen={false} />; 
 
     const filteredBooks = books
-        .filter(book =>
-            (activeCategory === 'All' || book.category === activeCategory) &&
-            (book.title.toLowerCase().includes(search.toLowerCase()) ||
-                book.tags?.some(tag => tag.toLowerCase().includes(search.toLowerCase())))
-        );
+        .filter(book => {
+            const matchesSearch = book.title.toLowerCase().includes(search.toLowerCase()) ||
+                book.tags?.some(tag => tag.toLowerCase().includes(search.toLowerCase()));
+            if (!matchesSearch) return false;
+
+            if (activeCategory === 'All') return true;
+            if (activeCategory === 'Free') return book.type === 'free';
+            if (activeCategory === 'Paid') return book.type === 'paid';
+            return book.category === activeCategory;
+        });
 
     const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('I want to buy a product')}`;
 
@@ -91,15 +98,85 @@ const Home = () => {
             </section>
 
             {/* Search */}
-            <div className="glass-panel" style={{ padding: '0.7rem 1rem', borderRadius: '14px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <Search size={18} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-                <input
-                    type="text"
-                    placeholder="Search for software, VPNs, or courses..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    style={{ width: '100%', background: 'transparent', border: 'none', color: 'white', fontSize: '0.9rem', outline: 'none' }}
-                />
+            <div className="glass-panel" style={{ padding: '0.7rem 1rem', borderRadius: '10px', marginBottom: '1.5rem', position: 'relative', zIndex: 50 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <Search size={18} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                    <input
+                        type="text"
+                        placeholder="Search for software, VPNs, or courses..."
+                        value={search}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            setSearch(val);
+                            if (val.length > 1 && allBooks.length > 0) {
+                                const matches = allBooks.filter(b =>
+                                    b.title.toLowerCase().includes(val.toLowerCase()) ||
+                                    b.category.toLowerCase().includes(val.toLowerCase())
+                                ).slice(0, 5);
+                                setSuggestions(matches);
+                                setShowSuggestions(true);
+                            } else {
+                                setShowSuggestions(false);
+                            }
+                        }}
+                        onFocus={() => { if (search.length > 1) setShowSuggestions(true); }}
+                        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)} // Delay to allow click
+                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '0.9rem', outline: 'none' }}
+                    />
+                </div>
+
+                {/* Autocomplete Dropdown */}
+                <AnimatePresence>
+                    {showSuggestions && suggestions.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                right: 0,
+                                background: 'var(--card-bg)', // Use theme variable
+                                backdropFilter: 'blur(10px)',
+                                border: '1px solid var(--glass-border)',
+                                borderRadius: '0 0 10px 10px',
+                                marginTop: '5px',
+                                boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+                                overflow: 'hidden'
+                            }}
+                        >
+                            {suggestions.map((book, i) => (
+                                <a
+                                    key={book.id}
+                                    href={`/product/${book.id}`}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '1rem',
+                                        padding: '0.8rem 1rem',
+                                        textDecoration: 'none',
+                                        borderBottom: i < suggestions.length - 1 ? '1px solid var(--glass-border)' : 'none',
+                                        transition: 'background 0.2s'
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                >
+                                    <img
+                                        src={book.image}
+                                        alt={book.title}
+                                        style={{ width: '40px', height: '40px', borderRadius: '6px', objectFit: 'cover' }}
+                                    />
+                                    <div>
+                                        <div style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: '500' }}>{book.title}</div>
+                                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{book.category}</div>
+                                    </div>
+                                    <ArrowUpRight size={14} style={{ marginLeft: 'auto', color: 'var(--text-muted)' }} />
+                                </a>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Main Content */}
@@ -107,7 +184,9 @@ const Home = () => {
                 <section>
                     {/* Books Grid or Loader */}
                     {loading ? (
-                        <Loader fullScreen={false} />
+                        <div className="books-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
+                            {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
+                        </div>
                     ) : (
                         <div className="books-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
                             {filteredBooks.length > 0 ? (
@@ -123,7 +202,17 @@ const Home = () => {
                         </div>
                     )}
 
-                    {/* Category Bundle Card (Only if loaded and has books) */}
+                    {/* Auto-Loading Indicator */}
+                    {loadingMore && (
+                        <div style={{ textAlign: 'center', padding: '1.5rem 0', color: 'var(--text-muted)' }}>
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                                style={{ display: 'inline-block', width: '24px', height: '24px', border: '2px solid var(--primary)', borderTopColor: 'transparent', borderRadius: '50%' }}
+                            />
+                            <p style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>Loading more products...</p>
+                        </div>
+                    )}
                     {!loading && filteredBooks.length > 0 && (() => {
                         const catBtn = categoryButtons[activeCategory] || {};
                         const bundleMsg = catBtn.message || `I want to buy all ${activeCategory} items bundle`;
@@ -216,8 +305,8 @@ const Home = () => {
                         </a>
                     </div>
                 </aside>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

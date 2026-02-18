@@ -3,8 +3,8 @@ import { Helmet } from 'react-helmet-async';
 const SEO = ({ title, description, image, url }) => {
     const siteTitle = "Digital Super Mart - Premium Digital Deals";
     const fullTitle = `${title} | ${siteTitle}`;
-    const defaultDesc = "Buy premium veterinary books and PDFs. Trusted source for vet students and professionals.";
-    const siteUrl = "https://digitalsupermart.store"; // Change to your actual domain
+    const defaultDesc = "Get the best digital deals on software, courses, and premium accounts. Instant access and great support.";
+    const siteUrl = "https://digital-supermart.vercel.app"; // Change to your actual domain
 
     return (
         <Helmet>

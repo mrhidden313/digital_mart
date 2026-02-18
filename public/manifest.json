@@ -1,0 +1,21 @@
+{
+    "name": "Digital Super Mart",
+    "short_name": "SuperMart",
+    "description": "Premium software and digital deals at unbeatable prices.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#020617",
+    "theme_color": "#8b5cf6",
+    "icons": [
+        {
+            "src": "/logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
