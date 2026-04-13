@@ -601,6 +601,80 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
+
+            {/* TRASH TAB */}
+            {activeTab === 'trash' && (
+                <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '18px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <h2 style={{ fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <Trash2 size={24} style={{ color: '#ef4444' }} /> Trash ({trash.length})
+                        </h2>
+                        {trash.length > 0 && (
+                            <button 
+                                onClick={() => {
+                                    if(window.confirm('Are you sure you want to empty the trash permanently?')) {
+                                        emptyTrash();
+                                        toast.success('Trash emptied');
+                                    }
+                                }}
+                                className="btn" 
+                                style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', fontSize: '0.8rem' }}
+                            >
+                                <XCircle size={16} /> Empty Trash
+                            </button>
+                        )}
+                    </div>
+
+                    {trash.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text-muted)' }}>
+                            <Trash2 size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
+                            <p>Trash is empty.</p>
+                        </div>
+                    ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                            {trash.map((item) => (
+                                <div key={item.id} style={{ 
+                                    padding: '0.8rem', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', 
+                                    border: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' 
+                                }}>
+                                    <div>
+                                        <h4 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{item.title}</h4>
+                                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                                             Deleted: {item.deletedAt ? new Date(item.deletedAt).toLocaleDateString() : 'Unknown'}
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        <button 
+                                            onClick={() => {
+                                                restoreBook(item.id);
+                                                toast.success('Product restored!');
+                                            }}
+                                            className="btn" 
+                                            style={{ background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', border: 'none', padding: '0.4rem', borderRadius: '6px' }}
+                                            title="Restore"
+                                        >
+                                            <RotateCcw size={16} />
+                                        </button>
+                                        <button 
+                                            onClick={() => {
+                                                if(window.confirm('Permanently delete this item? This cannot be undone.')) {
+                                                    permanentDeleteBook(item.id);
+                                                    toast.success('Permanently deleted');
+                                                }
+                                            }}
+                                            className="btn" 
+                                            style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', padding: '0.4rem', borderRadius: '6px' }}
+                                            title="Delete Permanently"
+                                        >
+                                            <XCircle size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
