@@ -19,7 +19,7 @@ const NotFound = () => {
                 <h1 className="outfit" style={{ fontSize: '6rem', marginBottom: '1rem', color: 'white' }}>404</h1>
                 <h2 style={{ marginBottom: '2rem', color: 'var(--text-muted)' }}>Oops! This book page doesn't exist.</h2>
                 <Link to="/" className="btn btn-primary" style={{ padding: '1rem 3rem' }}>
-                    Back to Digital Super Mart
+                    Back to Digital Trusted Zone
                 </Link>
             </motion.div>
         </div>

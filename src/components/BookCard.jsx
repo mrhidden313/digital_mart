@@ -19,7 +19,7 @@ const BADGE_STYLES = {
 };
 
 const BookCard = ({ book, index = 0 }) => {
-    const { whatsappNumber } = useContext(BookContext);
+    const { whatsappNumber, formatDualPrice } = useContext(BookContext);
     const [showShare, setShowShare] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -58,26 +58,18 @@ const BookCard = ({ book, index = 0 }) => {
         setShowShare(false);
     };
 
-    // Alternate animation directions for variety
-    const directions = [
-        { x: -60, y: 0 },   // from left
-        { x: 60, y: 0 },    // from right
-        { x: 0, y: 50 },    // from bottom
-        { x: -40, y: 30 },  // diagonal left-bottom
-        { x: 40, y: 30 },   // diagonal right-bottom
-        { x: 0, y: -50 },   // from top
-    ];
-    const dir = directions[index % directions.length];
+    // Subtle left/right slide only — lightweight
+    const fromX = index % 2 === 0 ? -20 : 20;
     const badge = BADGE_STYLES[book.badge];
 
     return (
         <motion.div
-            initial={{ opacity: 0, x: dir.x, y: dir.y, scale: 0.9 }}
-            whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-            viewport={{ once: false, margin: "-80px" }}
-            transition={{ duration: 0.5, type: "spring", stiffness: 120, damping: 14 }}
-            whileHover={{ y: -8, scale: 1.03, boxShadow: '0 15px 35px rgba(139, 92, 246, 0.25)' }}
-            whileTap={{ scale: 0.97 }}
+            initial={{ opacity: 0, x: fromX }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            whileHover={{ y: -4, boxShadow: '0 10px 25px rgba(45, 212, 191, 0.15)' }}
+            whileTap={{ scale: 0.98 }}
             className="book-card glass-panel"
             style={{
                 borderRadius: '16px',
@@ -90,7 +82,7 @@ const BookCard = ({ book, index = 0 }) => {
                 cursor: 'pointer'
             }}
         >
-            <div style={{ position: 'relative', height: '180px', overflow: 'hidden' }}>
+            <div className="card-img-container" style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
                 <img
                     src={book.image}
                     alt={book.title}
@@ -141,7 +133,7 @@ const BookCard = ({ book, index = 0 }) => {
                 </div>
             </div>
 
-            <div style={{ padding: '1.2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div className="card-content" style={{ padding: '1.2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <div style={{ marginBottom: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
                     {book.category}
                 </div>
@@ -155,7 +147,7 @@ const BookCard = ({ book, index = 0 }) => {
                 <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                         <span style={{ fontSize: '1.1rem', fontWeight: '700', color: book.type === 'paid' ? 'var(--accent-gold)' : 'var(--secondary)' }}>
-                            {book.type === 'free' ? 'Free' : (book.price || 'Ask Price')}
+                            {formatDualPrice(book.price, book.type)}
                         </span>
                         {/* Share Button */}
                         <div style={{ position: 'relative' }}>

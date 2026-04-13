@@ -3,7 +3,9 @@ import { setDoc, getDoc } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'products';
 const CATEGORIES_COLLECTION = 'categories';
-const SETTINGS_KEY = 'nightstore_settings'; // Keep settings local for now or move to DB later
+const SETTINGS_COLLECTION = 'settings';
+const GLOBAL_SETTINGS_ID = 'site_config';
+const SETTINGS_KEY = 'nightstore_settings';
 const BUTTONS_KEY = 'nightstore_buttons';
 
 // Default Data (Fallback)
@@ -302,10 +304,42 @@ export const saveCategoryButtons = (buttons) => {
     localStorage.setItem(BUTTONS_KEY, JSON.stringify(buttons));
 };
 
+// ===== GLOBAL SITE SETTINGS (Cloud Firestore) =====
+
+export const getGlobalSettingsAPI = async () => {
+    try {
+        const docRef = doc(db, SETTINGS_COLLECTION, GLOBAL_SETTINGS_ID);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data();
+        }
+        // Fallback default
+        return {
+            whatsappNumber: '923301980891',
+            whatsappGroup: '',
+            paypalClientId: 'AeI8Vu0mk6h94MwgAoc4bwVj_kTrkViDiRw-nUcqlUsVL6w7eDaKFaCW8_4b6Pc9lkOIZTHM1VQ4h8Ca',
+            cryptoNumber: '923301980891',
+            easypaisaNumber: '923215150976',
+            logo: '/logo.png'
+        };
+    } catch (error) {
+        console.error("Error fetching global settings:", error);
+        return null;
+    }
+};
+
+export const updateGlobalSettingsAPI = async (settings) => {
+    try {
+        const docRef = doc(db, SETTINGS_COLLECTION, GLOBAL_SETTINGS_ID);
+        await setDoc(docRef, settings, { merge: true });
+        return settings;
+    } catch (error) {
+        console.error("Error updating global settings:", error);
+        throw error;
+    }
+};
+
 export const resetToDefaults = () => {
-    // Careful with this on Firestore!
-    // We might not want to wipe Cloud DB on reset.
-    // Just clear local settings.
     localStorage.removeItem(SETTINGS_KEY);
     localStorage.removeItem(BUTTONS_KEY);
     window.location.reload();

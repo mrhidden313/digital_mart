@@ -39,15 +39,26 @@ const SortableBook = ({ book, onDelete, onEdit }) => {
 };
 
 const AdminDashboard = () => {
-    const { allBooks: books, trash, addBook, updateBook, deleteBook, restoreBook, permanentDeleteBook, emptyTrash, logo, updateLogo, reorderBooks, whatsappNumber, updateWhatsappNumber, whatsappGroup, updateWhatsappGroup, categoryButtons, updateCategoryButton, resetToDefaults, categories, customCategories, addCategory, deleteCategory, updateCategory } = useContext(BookContext);
+    const { 
+        allBooks: books, trash, addBook, updateBook, deleteBook, restoreBook, permanentDeleteBook, emptyTrash, 
+        logo, updateLogo, reorderBooks, 
+        whatsappNumber, updateWhatsappNumber, 
+        whatsappGroup, updateWhatsappGroup, 
+        categoryButtons, updateCategoryButton, 
+        resetToDefaults, categories, customCategories, addCategory, deleteCategory, updateCategory,
+        cryptoNumber, easypaisaNumber, paypalClientId, updateGlobalSettings
+    } = useContext(BookContext);
     const [formData, setFormData] = useState({
         title: '', excerpt: '', content: '', image: '', category: categories[1] || 'Free', tags: '', type: 'free', author: 'Supermart', price: '', whatsappText: '', badge: ''
     });
     const [editingId, setEditingId] = useState(null);
     const [codeView, setCodeView] = useState(false);
-    const [tempLogo, setTempLogo] = useState('');
-    const [tempWhatsapp, setTempWhatsapp] = useState(whatsappNumber || WHATSAPP_NUMBER);
+    const [tempLogo, setTempLogo] = useState(logo || '');
+    const [tempWhatsapp, setTempWhatsapp] = useState(whatsappNumber || '');
     const [tempGroupLink, setTempGroupLink] = useState(whatsappGroup || '');
+    const [tempPaypalId, setTempPaypalId] = useState(paypalClientId || '');
+    const [tempCrypto, setTempCrypto] = useState(cryptoNumber || '');
+    const [tempEasypaisa, setTempEasypaisa] = useState(easypaisaNumber || '');
     const [activeTab, setActiveTab] = useState('add');
     const [inventoryFilter, setInventoryFilter] = useState('All');
     const [uploading, setUploading] = useState(false);
@@ -104,7 +115,7 @@ const AdminDashboard = () => {
 
     const cancelEdit = () => {
         setEditingId(null);
-        setFormData({ title: '', excerpt: '', content: '', image: '', category: CATEGORIES[1], tags: '', type: 'free', author: 'Digital Super Mart', price: '', whatsappText: '', badge: '' });
+        setFormData({ title: '', excerpt: '', content: '', image: '', category: CATEGORIES[1], tags: '', type: 'free', author: 'Digital Trusted Zone', price: '', whatsappText: '', badge: '' });
         toast.info('Edit cancelled');
     };
 
@@ -162,7 +173,7 @@ const AdminDashboard = () => {
     return (
         <div className="container" style={{ padding: '6rem 1rem 3rem' }}>
             <h1 className="outfit" style={{ marginBottom: '1.5rem', fontSize: 'clamp(1.4rem, 4vw, 2.2rem)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Layout size={32} className="text-gradient" /> Digital Super Mart Admin
+                <Layout size={32} className="text-gradient" /> Digital Trusted Zone Admin
             </h1>
 
             {/* Tab Buttons */}
@@ -533,15 +544,6 @@ const AdminDashboard = () => {
             {/* SETTINGS TAB */}
             {activeTab === 'settings' && (
                 <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '18px' }}>
-                    <h2 style={{ marginBottom: '1.5rem', fontSize: '1.2rem' }}>⚙️ Settings</h2>
-
-                    {/* WhatsApp */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <h4 style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#25D366', fontSize: '0.9rem' }}><Phone size={14} /> WhatsApp Number</h4>
-                        <div style={{ display: 'flex', gap: '0.4rem' }}>
-                            <input placeholder="e.g. 923301980891" value={tempWhatsapp} onChange={e => setTempWhatsapp(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                            <button onClick={() => { updateWhatsappNumber(tempWhatsapp); toast.success('Saved! ✅'); }} className="btn whatsapp-btn" style={{ padding: '0.4rem 0.7rem' }}><Phone size={14} /></button>
-                        </div>
                         <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>With country code, no + sign</p>
                     </div>
 

@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
 const SEO = ({ title, description, image, url }) => {
-    const siteTitle = "Digital Super Mart - Premium Digital Deals";
+    const siteTitle = "Digital Trusted Zone - Premium Digital Deals";
     const fullTitle = `${title} | ${siteTitle}`;
     const defaultDesc = "Get the best digital deals on software, courses, and premium accounts. Instant access and great support.";
     const siteUrl = "https://digital-supermart.vercel.app"; // Change to your actual domain

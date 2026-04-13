@@ -43,7 +43,7 @@ const Home = () => {
     return (
         <div className="container" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
             <SEO
-                title={`${activeCategory === 'All' ? 'All Products' : activeCategory} | Digital Super Mart`}
+                title={`${activeCategory === 'All' ? 'All Products' : activeCategory} | Digital Trusted Zone`}
                 description="Get premium software subscriptions, VPNs, and tech courses at the best prices."
             />
 
@@ -198,11 +198,11 @@ const Home = () => {
                 <section>
                     {/* Books Grid or Loader */}
                     {loading ? (
-                        <div className="books-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
+                        <div className="books-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '2rem', padding: '1rem 0' }}>
                             {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
                         </div>
                     ) : (
-                        <div className="books-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
+                        <div className="books-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '2rem', padding: '1rem 0' }}>
                             {filteredBooks.length > 0 ? (
                                 filteredBooks.map((book, index) => (
                                     <BookCard key={book.id} book={book} index={index} />

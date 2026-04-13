@@ -392,29 +392,35 @@ textarea:focus {
 
     .books-grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.6rem !important;
+        gap: 1.5rem !important; /* Even more space between cards as requested */
+        padding: 0.5rem 0.5rem !important;
     }
     
-    /* Make card elements smaller to fit 2 side-by-side cleanly */
-    .book-card .card-img {
-        height: 120px !important;
+    /* Ensure 50/50 split */
+    .book-card .card-img-container {
+        height: 150px !important;
+        flex: none !important;
+    }
+    .book-card .card-content {
+        flex: 1 !important;
+        padding: 0.6rem !important;
     }
     .book-card h3 {
-        font-size: 0.9rem !important;
-        margin-bottom: 0.4rem !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 0.3rem !important;
         line-height: 1.2 !important;
     }
     .book-card p {
-        font-size: 0.7rem !important;
-        margin-bottom: 0.5rem !important;
+        font-size: 0.68rem !important;
+        margin-bottom: 0.4rem !important;
         line-height: 1.3 !important;
     }
     .book-card .btn {
         padding: 0.4rem !important;
-        font-size: 0.75rem !important;
+        font-size: 0.72rem !important;
     }
     .book-card > div:last-child {
-        padding: 0.8rem !important;
+        padding: 0.7rem !important;
     }
 
     /* Admin dashboard - stack */

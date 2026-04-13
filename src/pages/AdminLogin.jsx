@@ -36,7 +36,7 @@ const AdminLogin = () => {
                     <div style={{ width: '70px', height: '70px', background: 'rgba(22, 163, 74, 0.1)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'var(--primary)' }}>
                         <Lock size={35} />
                     </div>
-                    <h2 className="outfit">Digital Super Mart</h2>
+                    <h2 className="outfit">Digital Trusted Zone</h2>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Admin Login Panel</p>
                 </div>
 

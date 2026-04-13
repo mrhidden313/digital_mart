@@ -7,13 +7,13 @@ const Footer = () => {
                 <div className="footer-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem' }}>
                     <div>
                         <h3 className="outfit" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
-                            <span style={{ color: 'var(--text-primary)' }}>Digital</span><span style={{ color: 'var(--primary)' }}> Super Mart</span>
+                            <span style={{ color: 'var(--text-primary)' }}>Digital</span><span style={{ color: 'var(--primary)' }}> Trusted Zone</span>
                         </h3>
                         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Premium Software, VPNs & Courses at unbeatable prices.</p>
                     </div>
                     <div className="footer-right" style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textAlign: 'right' }}>
                         <p>Created by <span style={{ color: 'var(--primary)' }}>Mr Farman</span></p>
-                        <p>&copy; {new Date().getFullYear()} Digital Super Mart. All Rights Reserved.</p>
+                        <p>&copy; {new Date().getFullYear()} Digital Trusted Zone. All Rights Reserved.</p>
                     </div>
                 </div>
 

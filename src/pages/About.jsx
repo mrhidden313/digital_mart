@@ -33,10 +33,10 @@ const About = () => {
                 </motion.div>
 
                 <h1 className="outfit" style={{ fontSize: 'clamp(1.8rem, 5vw, 3rem)', marginBottom: '1.5rem' }}>
-                    About Digital Super Mart
+                    About Digital Trusted Zone
                 </h1>
                 <p style={{ fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)', color: 'var(--text-muted)', lineHeight: '1.8', marginBottom: '1.5rem' }}>
-                    Digital Super Mart is your one-stop destination for premium software subscriptions, VPNs, streaming services, and digital products at unbeatable prices with instant WhatsApp delivery.
+                    Digital Trusted Zone is your one-stop destination for premium software subscriptions, VPNs, streaming services, and digital products at unbeatable prices with instant WhatsApp delivery.
                 </p>
 
                 <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', textAlign: 'left', marginTop: '2.5rem' }}>

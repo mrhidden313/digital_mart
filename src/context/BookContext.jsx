@@ -5,7 +5,8 @@ import {
     getCategoryButtons, saveCategoryButtons, resetToDefaults,
 
     getCategoriesAPI, addCategoryAPI, deleteCategoryAPI, updateCategoryAPI,
-    getTrashAPI, moveToTrashAPI, restoreBookAPI, permanentDeleteBookAPI, emptyTrashAPI
+    getTrashAPI, moveToTrashAPI, restoreBookAPI, permanentDeleteBookAPI, emptyTrashAPI,
+    getGlobalSettingsAPI, updateGlobalSettingsAPI
 } from '../services/api';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth'; // Direct import from SDK
 import { auth } from '../services/firebase'; // Import initialized auth instance
@@ -36,10 +37,14 @@ export const BookProvider = ({ children }) => {
     const [authLoading, setAuthLoading] = useState(true);
 
     const [logo, setLogo] = useState('');
-    const [whatsappNumber, setWhatsappNumber] = useState(WHATSAPP_NUMBER);
+    const [whatsappNumber, setWhatsappNumber] = useState('923301980891');
+    const [cryptoNumber, setCryptoNumber] = useState('923301980891');
+    const [easypaisaNumber, setEasypaisaNumber] = useState('923215150976');
+    const [paypalClientId, setPaypalClientId] = useState('AeI8Vu0mk6h94MwgAoc4bwVj_kTrkViDiRw-nUcqlUsVL6w7eDaKFaCW8_4b6Pc9lkOIZTHM1VQ4h8Ca');
     const [whatsappGroup, setWhatsappGroup] = useState('');
     const [categoryButtons, setCategoryButtons] = useState({});
     const [activeCategory, setActiveCategory] = useState('All');
+    const [pkrRate, setPkrRate] = useState(278);
 
     // Categories State
     const [categories, setCategories] = useState(['All', 'Free', 'Paid']); // UI list
@@ -136,33 +141,75 @@ export const BookProvider = ({ children }) => {
 
     // Initial Load of Meta Data
     useEffect(() => {
-        // Also load ALL books for admin (in background, no rush)
-        const loadAllForAdmin = async () => {
-            const all = await getAllBooks();
-            setAllBooks(all);
-        };
-        loadAllForAdmin();
+        const loadInitialData = async () => {
+            // 1. All books for admin
+            try {
+                const all = await getAllBooks();
+                setAllBooks(all);
+            } catch (e) { console.error(e); }
 
-        const fetchCategories = async () => {
-            const dbCats = await getCategoriesAPI();
-            setCustomCategories(dbCats);
-            const names = dbCats.map(c => c.name);
-            setCategories(['All', 'Free', 'Paid', ...names]);
-        };
-        fetchCategories();
+            // 2. Categories
+            try {
+                const dbCats = await getCategoriesAPI();
+                setCustomCategories(dbCats);
+                const names = dbCats.map(c => c.name);
+                setCategories(['All', 'Free', 'Paid', ...names]);
+            } catch (e) { console.error(e); }
 
-        const fetchTrash = async () => {
-            const trashData = await getTrashAPI();
-            setTrash(trashData);
-        };
-        fetchTrash();
+            // 3. Trash
+            try {
+                const trashData = await getTrashAPI();
+                setTrash(trashData);
+            } catch (e) { console.error(e); }
 
-        const settings = getSettings();
-        setLogo(settings.logo || '');
-        setWhatsappNumber(settings.whatsappNumber || WHATSAPP_NUMBER);
-        setWhatsappGroup(settings.whatsappGroup || '');
-        setCategoryButtons(getCategoryButtons());
+            // 5. Global Config (Firestore)
+            const globalSettings = await getGlobalSettingsAPI();
+            if (globalSettings) {
+                setWhatsappNumber(globalSettings.whatsappNumber || '923301980891');
+                setCryptoNumber(globalSettings.cryptoNumber || '923301980891');
+                setEasypaisaNumber(globalSettings.easypaisaNumber || '923215150976');
+                setPaypalClientId(globalSettings.paypalClientId || 'AeI8Vu0mk6h94MwgAoc4bwVj_kTrkViDiRw-nUcqlUsVL6w7eDaKFaCW8_4b6Pc9lkOIZTHM1VQ4h8Ca');
+                setLogo(globalSettings.logo || '/logo.png');
+                setWhatsappGroup(globalSettings.whatsappGroup || '');
+            }
+
+            // 6. Exchange Rate (USD to PKR)
+            try {
+                const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+                const data = await res.json();
+                if (data && data.rates && data.rates.PKR) {
+                    setPkrRate(data.rates.PKR);
+                }
+            } catch (err) {
+                console.error("Failed to fetch exchange rate", err);
+            }
+
+            // 7. Old Settings (LocalStorage legacy)
+            const settings = getSettings();
+            if (!globalSettings) {
+                setLogo(settings.logo || '');
+            }
+            setCategoryButtons(getCategoryButtons());
+        };
+
+        loadInitialData();
     }, []);
+
+    const updateGlobalSettings = async (newSettings) => {
+        try {
+            await updateGlobalSettingsAPI(newSettings);
+            if (newSettings.whatsappNumber) setWhatsappNumber(newSettings.whatsappNumber);
+            if (newSettings.cryptoNumber) setCryptoNumber(newSettings.cryptoNumber);
+            if (newSettings.easypaisaNumber) setEasypaisaNumber(newSettings.easypaisaNumber);
+            if (newSettings.paypalClientId) setPaypalClientId(newSettings.paypalClientId);
+            if (newSettings.logo) setLogo(newSettings.logo);
+            if (newSettings.whatsappGroup) setWhatsappGroup(newSettings.whatsappGroup);
+            return { success: true };
+        } catch (error) {
+            console.error(error);
+            return { success: false, error: error.message };
+        }
+    };
 
     const addBook = async (book) => {
         try {
@@ -359,6 +406,23 @@ export const BookProvider = ({ children }) => {
     };
 
 
+    // -- Currency Helpers --
+    const getUsdAmount = (pricePKR) => {
+        if (!pricePKR) return 0;
+        // Extract numbers and decimals
+        const cleanPrice = String(pricePKR).replace(/[^0-9.]/g, '');
+        const num = parseFloat(cleanPrice);
+        if (isNaN(num)) return 0;
+        // Convert PKR to USD
+        return (num / pkrRate).toFixed(2);
+    };
+
+    const formatDualPrice = (pricePKR, type) => {
+        if (type === 'free') return 'Free';
+        if (!pricePKR) return 'Ask Price';
+        const usd = getUsdAmount(pricePKR);
+        return `${pricePKR} ($${usd})`;
+    };
 
     return (
         <BookContext.Provider value={{
@@ -368,12 +432,14 @@ export const BookProvider = ({ children }) => {
             isAdmin, currentUser, authLoading, login, googleLogin, logout,
             logo, updateLogo,
             whatsappNumber, updateWhatsappNumber,
+            cryptoNumber, easypaisaNumber, paypalClientId, updateGlobalSettings,
             whatsappGroup, updateWhatsappGroup,
             categoryButtons, updateCategoryButton,
             activeCategory, setActiveCategory,
 
             categories, customCategories, addCategory, deleteCategory, updateCategory,
-            resetToDefaults
+            resetToDefaults,
+            getUsdAmount, formatDualPrice
         }}>
             {children}
         </BookContext.Provider>

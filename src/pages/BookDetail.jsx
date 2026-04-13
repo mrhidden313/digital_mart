@@ -11,11 +11,12 @@ import BookCard from '../components/BookCard';
 
 const BookDetail = () => {
     const { id } = useParams();
-    const { books, whatsappNumber, whatsappGroup } = useContext(BookContext);
+    const { books, whatsappNumber, whatsappGroup, formatDualPrice, getUsdAmount, cryptoNumber, easypaisaNumber } = useContext(BookContext);
     const book = books.find(b => String(b.id) === String(id));
 
     const [purchaseComplete, setPurchaseComplete] = useState(false);
     const [checkoutOrderId, setCheckoutOrderId] = useState(null);
+    const [redirectTimer, setRedirectTimer] = useState(5);
 
     const [countdown, setCountdown] = useState(15);
     const [canDownload, setCanDownload] = useState(false);
@@ -31,13 +32,32 @@ const BookDetail = () => {
         }
     }, [countdown, book]);
 
+    // Auto WhatsApp redirect after payment
+    useEffect(() => {
+        if (!purchaseComplete || !checkoutOrderId) return;
+        if (redirectTimer <= 0) {
+            const msg = `✅ Payment Confirmed!
+
+Hello, I just paid for *${book?.title}* via PayPal.
+
+🧾 Transaction ID: ${checkoutOrderId}
+
+Please send me the access/delivery. Thank you!`;
+            const waNumber = whatsappNumber || '923301980891';
+            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+            return;
+        }
+        const t = setTimeout(() => setRedirectTimer(prev => prev - 1), 1000);
+        return () => clearTimeout(t);
+    }, [purchaseComplete, checkoutOrderId, redirectTimer]);
+
     if (!book) return <div className="container" style={{ padding: '8rem 0', textAlign: 'center' }}><h2>Product not found</h2><Link to="/" className="btn" style={{ marginTop: '1rem', display: 'inline-block' }}>Go Home</Link></div>;
 
     const relatedBooks = books.filter(b => b.category === book.category && b.id !== book.id).slice(0, 3);
 
     const whatsappMessage = book.whatsappText
         ? book.whatsappText
-        : `I want to buy "${book.title}" from Digital Super Mart`;
+        : `I want to buy "${book.title}" from Digital Trusted Zone`;
 
     const whatsappLink = whatsappNumber
         ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
@@ -46,8 +66,8 @@ const BookDetail = () => {
     return (
         <div className="container" style={{ padding: '6rem 1rem 3rem' }}>
             <SEO
-                title={`${book.title} | Digital Super Mart`}
-                description={`Get ${book.title}. Premium software/course. Price: ${book.price || 'Free'}. Instant delivery via WhatsApp.`}
+                title={`${book.title} | Digital Trusted Zone`}
+                description={`Get ${book.title}. Premium software/course. Price: ${formatDualPrice(book.price, book.type)}. Instant delivery via WhatsApp.`}
                 image={book.image}
             />
             <Link to="/" className="btn" style={{ marginBottom: '1.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
@@ -75,35 +95,60 @@ const BookDetail = () => {
                     {book.type === 'paid' ? (
                         <>
                             <h2 className="outfit" style={{ marginBottom: '1rem' }}>Unlock Premium Access</h2>
+                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-gold)', marginBottom: '1rem' }}>
+                                {formatDualPrice(book.price, book.type)}
+                            </div>
                             <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', maxWidth: '500px', margin: '0 auto 1.5rem' }}>
                                 Get instant access to {book.title} with full warranty and support.
                             </p>
 
                             {purchaseComplete ? (
-                                <div style={{ padding: '2rem', background: 'rgba(22, 163, 74, 0.1)', border: '1px solid var(--accent-green)', borderRadius: '16px', color: 'var(--text-primary)' }}>
-                                    <h3 style={{ color: 'var(--accent-green)', marginBottom: '1rem' }}>Payment Successful!</h3>
-                                    <p>Your payment (Order ID: {checkoutOrderId}) is confirmed. Access your product below:</p>
-                                    {book.downloadUrl ? (
-                                        <a href={book.downloadUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ marginTop: '1rem' }}>
-                                            Access Premium Content
-                                        </a>
-                                    ) : (
-                                        <p style={{ marginTop: '1rem', color: 'var(--accent-gold)' }}>Contact support on WhatsApp to receive your automated file.</p>
-                                    )}
-                                </div>
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    style={{ padding: '2rem', background: 'linear-gradient(135deg, rgba(34,197,94,0.12), rgba(45,212,191,0.08))', border: '2px solid #22c55e', borderRadius: '20px', color: 'var(--text-primary)', textAlign: 'center' }}
+                                >
+                                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🎉</div>
+                                    <h3 style={{ color: '#22c55e', marginBottom: '0.5rem', fontSize: '1.4rem' }}>Payment Successful!</h3>
+                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.8rem' }}>
+                                        Order ID: <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '6px', color: 'var(--primary)' }}>{checkoutOrderId}</code>
+                                    </p>
+                                    <div style={{ margin: '1.2rem 0', padding: '1rem', background: 'rgba(37,211,102,0.08)', borderRadius: '12px', border: '1px solid rgba(37,211,102,0.2)' }}>
+                                        <p style={{ fontWeight: 600, marginBottom: '0.3rem' }}>Redirecting to WhatsApp in...</p>
+                                        <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#22c55e' }}>{redirectTimer}</div>
+                                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Your Transaction ID will be auto-typed in the chat</p>
+                                    </div>
+                                    <a
+                                        href={`https://wa.me/${whatsappNumber || '923301980891'}?text=${encodeURIComponent(`✅ Payment Confirmed!
+
+Hello, I just paid for *${book.title}* via PayPal.
+
+🧾 Transaction ID: ${checkoutOrderId}
+
+Please send me the access/delivery. Thank you!`)}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn"
+                                        style={{ background: '#25D366', color: 'white', fontWeight: 700, marginTop: '0.5rem' }}
+                                    >
+                                        Open WhatsApp Now →
+                                    </a>
+                                </motion.div>
                             ) : (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px', margin: '0 auto' }}>
                                     <div style={{ background: 'white', padding: '0.5rem', borderRadius: '8px' }}>
                                         <PayPalButtons
                                             style={{ layout: "vertical", shape: "rect" }}
                                             createOrder={(data, actions) => {
-                                                const priceStr = String(book.price || '10').replace(/[^0-9.]/g, '');
-                                                const finalPrice = parseFloat(priceStr) || 10;
+                                                const finalUsdPrice = getUsdAmount(book.price);
+                                                // Safety fallback
+                                                const chargeAmount = parseFloat(finalUsdPrice) || 1.00;
+                                                
                                                 return actions.order.create({
                                                     purchase_units: [
                                                         {
                                                             description: book.title,
-                                                            amount: { value: finalPrice.toString() },
+                                                            amount: { value: chargeAmount.toString() },
                                                         },
                                                     ],
                                                 });
@@ -111,9 +156,10 @@ const BookDetail = () => {
                                             onApprove={async (data, actions) => {
                                                 try {
                                                     const order = await actions.order.capture();
-                                                    toast.success("Transaction completed successfully!");
+                                                    toast.success("Payment successful! Redirecting to WhatsApp...");
                                                     setCheckoutOrderId(order.id);
                                                     setPurchaseComplete(true);
+                                                    setRedirectTimer(5);
                                                 } catch (err) {
                                                     toast.error("Transaction failed during capture.");
                                                 }
@@ -124,13 +170,13 @@ const BookDetail = () => {
                                         />
                                     </div>
 
-                                    <a href={`https://wa.me/923301980891?text=${encodeURIComponent(`hello dear i want to acces ${book.title} with crypto payment method`)}`} 
+                                    <a href={`https://wa.me/${cryptoNumber || '923301980891'}?text=${encodeURIComponent(`hello dear i want to acces ${book.title} with crypto payment method`)}`} 
                                        target="_blank" rel="noopener noreferrer" 
                                        className="btn" style={{ width: '100%', padding: '0.8rem', background: '#F7931A', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', justifyContent: 'center' }}>
                                         Pay with Crypto
                                     </a>
 
-                                    <a href={`https://wa.me/923215150976?text=${encodeURIComponent(`hello dear i want to acces ${book.title} with easypaisa payment method`)}`} 
+                                    <a href={`https://wa.me/${easypaisaNumber || '923215150976'}?text=${encodeURIComponent(`hello dear i want to acces ${book.title} with easypaisa payment method`)}`} 
                                        target="_blank" rel="noopener noreferrer" 
                                        className="btn" style={{ width: '100%', padding: '0.8rem', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', justifyContent: 'center' }}>
                                         Pay with Easypaisa

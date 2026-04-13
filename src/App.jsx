@@ -26,8 +26,10 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+    const { paypalClientId } = useContext(BookContext);
+
     return (
-        <PayPalScriptProvider options={{ "client-id": "AeI8Vu0mk6h94MwgAoc4bwVj_kTrkViDiRw-nUcqlUsVL6w7eDaKFaCW8_4b6Pc9lkOIZTHM1VQ4h8Ca", currency: "USD" }}>
+        <PayPalScriptProvider key={paypalClientId} options={{ "client-id": paypalClientId, currency: "USD" }}>
             <Router>
                 <div className="app-wrapper">
                     <Toaster position="top-right" richColors />

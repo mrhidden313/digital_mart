@@ -25,7 +25,7 @@ const Navbar = () => {
                     {logo ? (
                         <img src={logo} alt="Logo" style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover' }} />
                     ) : (
-                        <img src="/logo.png" alt="Digital Super Mart" style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover' }} />
+                        <img src="/logo.png" alt="Digital Trusted Zone" style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover' }} />
                     )}
                     <span className="outfit" style={{ fontWeight: '700', fontSize: '1.4rem', letterSpacing: '-0.5px' }}>
                         <span style={{ color: 'var(--text-primary)' }}>Digital</span>
