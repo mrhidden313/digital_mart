@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
-import { BookContext, CATEGORIES, WHATSAPP_NUMBER } from '../context/BookContext';
+import { useNavigate } from 'react-router-dom';
+import { BookContext, WHATSAPP_NUMBER } from '../context/BookContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ArrowUpRight, Monitor, Gamepad2, Tv, Wrench, ShoppingCart } from 'lucide-react';
 import BookCard from '../components/BookCard';
@@ -15,12 +16,15 @@ const Home = () => {
     const [search, setSearch] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [expandedParents, setExpandedParents] = useState({}); // Toggles for sidebar accordions
+    
+    // NAVIGATION HELPER
+    const navigate = useNavigate();
 
     // If loading, show Loader inside the grid area, not full screen
     // if (loading) return <Loader fullScreen={false} />; 
 
-    const filteredBooks = books
+    const baseBooks = search.trim() ? allBooks : books.slice(0, 8);
+    const filteredBooks = baseBooks
         .filter(book => {
             const matchesSearch = book.title.toLowerCase().includes(search.toLowerCase()) ||
                 book.tags?.some(tag => tag.toLowerCase().includes(search.toLowerCase()));
@@ -213,6 +217,19 @@ const Home = () => {
                                     <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Try a different category or search term.</p>
                                 </div>
                             )}
+                        </div>
+                    )}
+
+                    {/* EXPLORE MORE BUTTON - Only show when NOT searching and on Home */}
+                    {!search.trim() && (
+                        <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+                            <button 
+                                onClick={() => navigate('/store')} 
+                                className="btn btn-primary" 
+                                style={{ padding: '0.8rem 2.5rem', borderRadius: '12px', fontSize: '1rem', fontWeight: '600', boxShadow: '0 8px 25px var(--glow-primary)' }}
+                            >
+                                Explore Entire Store <ArrowUpRight size={18} />
+                            </button>
                         </div>
                     )}
 

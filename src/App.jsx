@@ -13,6 +13,7 @@ const AdminLogin = lazy(() => import('./pages/AdminLogin'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const SecretEntry = lazy(() => import('./pages/SecretEntry'));
 const About = lazy(() => import('./pages/About'));
+const Store = lazy(() => import('./pages/Store'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 const ProtectedRoute = ({ children }) => {
@@ -42,6 +43,7 @@ function App() {
                                 <Route path="/admin-login" element={<AdminLogin />} />
                                 <Route path="/secret" element={<SecretEntry />} />
                                 <Route path="/about" element={<About />} />
+                                <Route path="/store" element={<Store />} />
                                 <Route path="/admin" element={
                                     <ProtectedRoute>
                                         <AdminDashboard />

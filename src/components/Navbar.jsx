@@ -39,6 +39,7 @@ const Navbar = () => {
                 {/* Desktop Links */}
                 <div className="nav-links-desktop" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                     <Link to="/" style={{ textDecoration: 'none', color: 'var(--text-muted)', fontWeight: '500', fontSize: '0.9rem' }}>Home</Link>
+                    <Link to="/store" style={{ textDecoration: 'none', color: 'var(--text-muted)', fontWeight: '500', fontSize: '0.9rem' }}>Store</Link>
                     <Link to="/about" style={{ textDecoration: 'none', color: 'var(--text-muted)', fontWeight: '500', fontSize: '0.9rem' }}>About</Link>
                     {isAdmin && (
                         <>
@@ -101,6 +102,7 @@ const Navbar = () => {
                         style={{ display: 'none', flexDirection: 'column', gap: '0.8rem', padding: '0.8rem 1.2rem', borderTop: '1px solid var(--glass-border)', overflow: 'hidden' }}
                     >
                         <Link to="/" onClick={() => setMobileOpen(false)} style={{ textDecoration: 'none', color: 'var(--text-muted)', fontWeight: '500', padding: '0.4rem 0' }}>Home</Link>
+                        <Link to="/store" onClick={() => setMobileOpen(false)} style={{ textDecoration: 'none', color: 'var(--text-muted)', fontWeight: '500', padding: '0.4rem 0' }}>Store</Link>
                         <Link to="/about" onClick={() => setMobileOpen(false)} style={{ textDecoration: 'none', color: 'var(--text-muted)', fontWeight: '500', padding: '0.4rem 0' }}>About</Link>
                         {isAdmin && (
                             <>
