@@ -227,23 +227,23 @@ const Home = () => {
                                 onClick={() => navigate('/store')} 
                                 className="btn" 
                                 style={{ 
-                                    padding: '1.2rem 3.5rem', 
-                                    borderRadius: '16px', 
-                                    fontSize: '1.2rem', 
+                                    padding: '0.8rem 2.4rem', 
+                                    borderRadius: '12px', 
+                                    fontSize: '1.05rem', 
                                     fontWeight: '800', 
                                     textTransform: 'uppercase',
                                     letterSpacing: '1px',
                                     background: 'linear-gradient(135deg, #ec4899, #db2777)', 
                                     color: 'white',
                                     border: 'none',
-                                    boxShadow: '0 10px 30px rgba(236, 72, 153, 0.4)',
+                                    boxShadow: '0 8px 20px rgba(236, 72, 153, 0.35)',
                                     cursor: 'pointer',
                                     display: 'inline-flex',
                                     alignItems: 'center',
-                                    gap: '10px'
+                                    gap: '8px'
                                 }}
                             >
-                                EXPLORE FULL STORE <ArrowUpRight size={24} />
+                                EXPLORE FULL STORE <ArrowUpRight size={20} />
                             </button>
                         </div>
                     )}
