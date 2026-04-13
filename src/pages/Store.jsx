@@ -44,9 +44,8 @@ const Store = () => {
                 description="Explore our full collection of premium software and subscriptions."
             />
 
-            <div style={{ marginBottom: '2rem' }}>
-                <h1 className="outfit" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Full Store</h1>
-                <p style={{ color: 'var(--text-muted)' }}>Browse all premium digital assets with 2x2 progressive loading.</p>
+            <div style={{ marginBottom: '2.5rem' }}>
+                <h1 className="outfit" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'var(--text-primary)' }}>Full Store</h1>
             </div>
 
             {/* Global Search Bar */}
