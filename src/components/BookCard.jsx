@@ -139,6 +139,7 @@ const BookCard = ({ book, index = 0 }) => {
                 </div>
                 <h3 className="outfit" style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', lineHeight: '1.3', color: 'var(--text-primary)', flex: 1 }}>
                     {truncateWords(book.title, 8)}
+                </h3>
                 <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         {/* Price Label Pill */}
