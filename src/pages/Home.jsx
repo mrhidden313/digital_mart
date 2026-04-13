@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { BookContext, CATEGORIES, WHATSAPP_NUMBER } from '../context/BookContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ArrowUpRight, MessageCircle } from 'lucide-react';
+import { Search, ArrowUpRight, Monitor, Gamepad2, Tv, Wrench, ShoppingCart } from 'lucide-react';
 import BookCard from '../components/BookCard';
 import SkeletonCard from '../components/SkeletonCard';
 import TrustWidget from '../components/TrustWidget';
@@ -9,29 +9,13 @@ import SEO from '../components/SEO';
 
 import Loader from '../components/Loader';
 
+
 const Home = () => {
-    const { books, allBooks, activeCategory, setActiveCategory, categoryButtons, loading, loadingMore, hasMore, customCategories } = useContext(BookContext);
+    const { books, allBooks, activeCategory, setActiveCategory, categoryButtons, loading, loadingMore, hasMore, customCategories, currentUser, isAdmin, googleLogin } = useContext(BookContext);
     const [search, setSearch] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [expandedParents, setExpandedParents] = useState({}); // Toggles for sidebar accordions
-    // 2-hour countdown timer (loops)
-    const [timeLeft, setTimeLeft] = useState(2 * 60 * 60 * 1000); // 2 hours in ms
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft(prev => {
-                if (prev <= 1000) return 2 * 60 * 60 * 1000; // Reset
-                return prev - 1000;
-            });
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
-
-    const hours = String(Math.floor(timeLeft / 3600000)).padStart(2, '0');
-    const minutes = String(Math.floor((timeLeft % 3600000) / 60000)).padStart(2, '0');
-    const seconds = String(Math.floor((timeLeft % 60000) / 1000)).padStart(2, '0');
-    // const centiseconds = String(Math.floor((timeLeft % 1000) / 10)).padStart(2, '0');
 
     // If loading, show Loader inside the grid area, not full screen
     // if (loading) return <Loader fullScreen={false} />; 
@@ -63,38 +47,68 @@ const Home = () => {
                 description="Get premium software subscriptions, VPNs, and tech courses at the best prices."
             />
 
-            {/* Hero */}
-            <section style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            {/* Hero Section */}
+            <section style={{ textAlign: 'center', margin: '4rem 0 3rem' }}>
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-center"
-                    style={{ marginBottom: '3rem' }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
                 >
-                    <h1 className="outfit" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', marginBottom: '1rem', lineHeight: '1.1' }}>
-                        {['Premium', 'Digital', 'Deals'].map((word, i) => (
-                            <motion.span
-                                key={word}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.15, duration: 0.5, type: 'spring' }}
-                                style={{ display: 'inline-block', marginRight: '0.4rem' }}
-                            >
-                                {i === 2 ? (
-                                    <span className="text-gradient" style={{ textShadow: '0 0 40px rgba(139, 92, 246, 0.4)' }}>{word}</span>
-                                ) : word}
-                            </motion.span>
-                        ))}
+                    {/* Trusted Zone Logo Placeholder */}
+                    <div style={{ margin: '0 auto 1.5rem', width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(45, 212, 191, 0.1)', border: '2px solid rgba(45, 212, 191, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <span style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--primary)', letterSpacing: '-2px' }}>DZ</span>
+                    </div>
+
+                    <h1 className="outfit" style={{ fontSize: 'clamp(2.2rem, 5vw, 4.2rem)', marginBottom: '1rem', lineHeight: '1.2', fontWeight: 800 }}>
+                        Unlock Your Digital Potential
                     </h1>
-                    <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5, duration: 0.5 }}
-                        style={{ color: 'var(--text-muted)', fontSize: 'clamp(0.95rem, 2vw, 1.15rem)', maxWidth: '500px', margin: '0 auto' }}
+                    
+                    <p style={{ color: 'var(--text-muted)', fontSize: 'clamp(1rem, 2vw, 1.2rem)', maxWidth: '600px', margin: '0 auto 2.5rem' }}>
+                        Premium Digital Subscriptions & Software Solutions.
+                    </p>
+
+                    <button 
+                        onClick={() => {
+                            if (!currentUser && !isAdmin && typeof googleLogin === 'function') {
+                                googleLogin();
+                            } else {
+                                window.scrollTo({ top: window.innerHeight * 0.7, behavior: 'smooth' });
+                            }
+                        }} 
+                        className="btn btn-primary" 
+                        style={{ padding: '0.9rem 2.8rem', fontSize: '1.1rem', borderRadius: '30px', fontWeight: 600 }}
                     >
-                        Best prices. Instant WhatsApp delivery.
-                    </motion.p>
+                        Get Started <ArrowUpRight size={20} />
+                    </button>
                 </motion.div>
+            </section>
+
+            {/* Feature Grid Categories (Visual Style) */}
+            <section style={{ marginBottom: '4rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1.5rem', justifyContent: 'center' }}>
+                    {[
+                        { name: 'Methods', icon: <Search size={28} strokeWidth={1.5} /> },
+                        { name: 'Software', icon: <Monitor size={28} strokeWidth={1.5} /> },
+                        { name: 'Games', icon: <Gamepad2 size={28} strokeWidth={1.5} /> },
+                        { name: 'Streaming', icon: <Tv size={28} strokeWidth={1.5} /> },
+                        { name: 'Tools', icon: <Wrench size={28} strokeWidth={1.5} /> },
+                        { name: 'Store', icon: <ShoppingCart size={28} strokeWidth={1.5} /> },
+                    ].map((item, idx) => (
+                        <motion.div 
+                            key={idx}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 + (idx * 0.1) }}
+                            className="category-pill-card"
+                            onClick={() => setActiveCategory('All')}
+                        >
+                            <div className="category-pill-icon">
+                                {item.icon}
+                            </div>
+                            <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.95rem' }}>{item.name}</span>
+                        </motion.div>
+                    ))}
+                </div>
             </section>
 
             {/* Search */}
@@ -250,31 +264,6 @@ const Home = () => {
                                     Limited Time Offer — Hurry Up!
                                 </h3>
 
-                                {/* Countdown Timer */}
-                                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-                                    {[{ label: 'HRS', value: hours }, { label: 'MIN', value: minutes }, { label: 'SEC', value: seconds }].map((unit, i) => (
-                                        <motion.div
-                                            key={unit.label}
-                                            animate={{ scale: [1, 1.05, 1] }}
-                                            transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                                            style={{
-                                                background: 'rgba(251, 191, 36, 0.1)',
-                                                border: '1px solid rgba(251, 191, 36, 0.3)',
-                                                borderRadius: '12px',
-                                                padding: '0.6rem 0.8rem',
-                                                minWidth: '60px',
-                                                textAlign: 'center'
-                                            }}
-                                        >
-                                            <div style={{ fontSize: 'clamp(1.2rem, 3vw, 1.6rem)', fontWeight: '900', color: 'var(--accent-gold)', fontFamily: 'monospace' }}>
-                                                {unit.value}
-                                            </div>
-                                            <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', letterSpacing: '1px', marginTop: '2px' }}>
-                                                {unit.label}
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </div>
 
                                 <motion.a
                                     href={bundleLink}

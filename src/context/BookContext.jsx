@@ -7,8 +7,10 @@ import {
     getCategoriesAPI, addCategoryAPI, deleteCategoryAPI, updateCategoryAPI,
     getTrashAPI, moveToTrashAPI, restoreBookAPI, permanentDeleteBookAPI, emptyTrashAPI
 } from '../services/api';
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'; // Direct import from SDK
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth'; // Direct import from SDK
 import { auth } from '../services/firebase'; // Import initialized auth instance
+
+const googleProvider = new GoogleAuthProvider();
 
 export const BookContext = createContext();
 
@@ -30,6 +32,7 @@ export const BookProvider = ({ children }) => {
     const [hasMore, setHasMore] = useState(true);
     const lastDocRef = useRef(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
     const [authLoading, setAuthLoading] = useState(true);
 
     const [logo, setLogo] = useState('');
@@ -310,7 +313,16 @@ export const BookProvider = ({ children }) => {
     // Auth Listener
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setIsAdmin(!!user);
+            if (user) {
+                setCurrentUser(user);
+                // Check if user authenticated via password (Admin) or google (User)
+                // AdminLogin uses signInWithEmailAndPassword (password provider)
+                const isPass = user.providerData.some(p => p.providerId === 'password');
+                setIsAdmin(isPass);
+            } else {
+                setCurrentUser(null);
+                setIsAdmin(false);
+            }
             setAuthLoading(false);
         });
         return () => unsubscribe();
@@ -326,10 +338,21 @@ export const BookProvider = ({ children }) => {
         }
     };
 
+    const googleLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            return { success: true, user: result.user };
+        } catch (error) {
+            console.error("Google login failed", error);
+            return { success: false, error: error.message };
+        }
+    };
+
     const logout = async () => {
         try {
             await signOut(auth);
             setIsAdmin(false);
+            setCurrentUser(null);
         } catch (error) {
             console.error("Logout failed", error);
         }
@@ -342,7 +365,7 @@ export const BookProvider = ({ children }) => {
             books, allBooks, trash, loading, loadingMore, hasMore,
             addBook, updateBook, deleteBook, reorderBooks,
             restoreBook, permanentDeleteBook, emptyTrash,
-            isAdmin, authLoading, login, logout,
+            isAdmin, currentUser, authLoading, login, googleLogin, logout,
             logo, updateLogo,
             whatsappNumber, updateWhatsappNumber,
             whatsappGroup, updateWhatsappGroup,

@@ -2,10 +2,10 @@ import { Link, useLocation } from 'react-router-dom';
 import { useContext, useState, useEffect } from 'react';
 import { BookContext, CATEGORIES } from '../context/BookContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, Menu, X, Sun, Moon } from 'lucide-react';
+import { LogOut, Menu, X, Sun, Moon, User } from 'lucide-react';
 
 const Navbar = () => {
-    const { isAdmin, logout, logo, activeCategory, setActiveCategory, categories } = useContext(BookContext);
+    const { isAdmin, currentUser, googleLogin, logout, logo, activeCategory, setActiveCategory, categories } = useContext(BookContext);
     const [mobileOpen, setMobileOpen] = useState(false);
     const location = useLocation();
     const isHome = location.pathname === '/';
@@ -28,8 +28,8 @@ const Navbar = () => {
                         <img src="/logo.png" alt="Digital Super Mart" style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover' }} />
                     )}
                     <span className="outfit" style={{ fontWeight: '700', fontSize: '1.4rem', letterSpacing: '-0.5px' }}>
-                        <span style={{ color: 'white' }}>Digital</span>
-                        <span style={{ color: 'var(--primary)' }}>SuperMart</span>
+                        <span style={{ color: 'var(--text-primary)' }}>Digital</span>
+                        <span style={{ color: 'var(--primary)' }}> Trusted Zone</span>
                     </span>
                 </Link>
 
@@ -45,11 +45,31 @@ const Navbar = () => {
                             </button>
                         </>
                     )}
+                    {!isAdmin && currentUser && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-primary)', fontSize: '0.85rem', fontWeight: 500 }}>
+                                {currentUser.photoURL ? (
+                                    <img src={currentUser.photoURL} alt="Profile" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
+                                ) : (
+                                    <User size={18} />
+                                )}
+                                {currentUser.displayName?.split(' ')[0] || 'User'}
+                            </div>
+                            <button onClick={logout} className="btn" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '0.4rem' }}>
+                                <LogOut size={18} />
+                            </button>
+                        </div>
+                    )}
+                    {!isAdmin && !currentUser && (
+                        <button onClick={googleLogin} className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}>
+                            Login with Google
+                        </button>
+                    )}
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <button onClick={toggleTheme} style={{
-                        background: 'rgba(255,255,255,0.08)', border: '1px solid var(--glass-border)',
+                        background: 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)',
                         borderRadius: '8px', padding: '6px', cursor: 'pointer', color: 'var(--text-muted)',
                         display: 'flex', alignItems: 'center', transition: 'all 0.3s ease'
                     }}>
@@ -60,7 +80,7 @@ const Navbar = () => {
                     <button
                         className="nav-hamburger"
                         onClick={() => setMobileOpen(!mobileOpen)}
-                        style={{ display: 'none', background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '0.3rem', alignItems: 'center', justifyContent: 'center' }}
+                        style={{ display: 'none', background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', padding: '0.3rem', alignItems: 'center', justifyContent: 'center' }}
                     >
                         {mobileOpen ? <X size={22} /> : <Menu size={22} />}
                     </button>
@@ -87,6 +107,16 @@ const Navbar = () => {
                                 </button>
                             </>
                         )}
+                        {!isAdmin && currentUser && (
+                            <button onClick={() => { logout(); setMobileOpen(false); }} className="btn" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '0.4rem', width: 'fit-content' }}>
+                                <LogOut size={16} /> Logout
+                            </button>
+                        )}
+                        {!isAdmin && !currentUser && (
+                            <button onClick={() => { googleLogin(); setMobileOpen(false); }} className="btn btn-primary" style={{ padding: '0.5rem 1rem', width: 'fit-content' }}>
+                                Login with Google
+                            </button>
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -109,8 +139,8 @@ const Navbar = () => {
                             style={{
                                 padding: '0.4rem 0.9rem',
                                 borderRadius: '8px',
-                                border: activeCategory === cat ? '1px solid var(--primary)' : '1px solid rgba(255,255,255,0.08)',
-                                background: activeCategory === cat ? 'var(--primary)' : 'rgba(255,255,255,0.03)',
+                                border: activeCategory === cat ? '1px solid var(--primary)' : '1px solid rgba(0,0,0,0.08)',
+                                background: activeCategory === cat ? 'var(--primary)' : 'rgba(0,0,0,0.03)',
                                 color: activeCategory === cat ? 'white' : 'var(--text-muted)',
                                 cursor: 'pointer',
                                 transition: '0.3s',

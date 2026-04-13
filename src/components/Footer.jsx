@@ -7,7 +7,7 @@ const Footer = () => {
                 <div className="footer-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem' }}>
                     <div>
                         <h3 className="outfit" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
-                            <span style={{ color: 'white' }}>Digital</span><span style={{ color: 'var(--primary)' }}> Super Mart</span>
+                            <span style={{ color: 'var(--text-primary)' }}>Digital</span><span style={{ color: 'var(--primary)' }}> Super Mart</span>
                         </h3>
                         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Premium Software, VPNs & Courses at unbeatable prices.</p>
                     </div>
@@ -26,7 +26,7 @@ const Footer = () => {
                         right: '10px',
                         width: '6px',
                         height: '6px',
-                        background: 'rgba(255,255,255,0.05)',
+                        background: 'rgba(0,0,0,0.05)',
                         borderRadius: '50%',
                         cursor: 'default'
                     }}

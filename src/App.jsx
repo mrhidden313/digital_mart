@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useContext, lazy, Suspense } from 'react';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { BookContext } from './context/BookContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -18,7 +19,7 @@ const ProtectedRoute = ({ children }) => {
     const { isAdmin, authLoading } = useContext(BookContext);
 
     if (authLoading) {
-        return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>Verifying Session...</div>;
+        return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)' }}>Verifying Session...</div>;
     }
 
     return isAdmin ? children : <Navigate to="/admin-login" />;
@@ -26,30 +27,32 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
     return (
-        <Router>
-            <div className="app-wrapper">
-                <Toaster position="top-right" richColors />
-                <Navbar />
-                <main style={{ minHeight: '80vh' }}>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/product/:id" element={<BookDetail />} />
-                            <Route path="/admin-login" element={<AdminLogin />} />
-                            <Route path="/secret" element={<SecretEntry />} />
-                            <Route path="/about" element={<About />} />
-                            <Route path="/admin" element={
-                                <ProtectedRoute>
-                                    <AdminDashboard />
-                                </ProtectedRoute>
-                            } />
-                            <Route path="*" element={<Suspense fallback={null}><NotFound /></Suspense>} />
-                        </Routes>
-                    </Suspense>
-                </main>
-                <Footer />
-            </div>
-        </Router>
+        <PayPalScriptProvider options={{ "client-id": "AeI8Vu0mk6h94MwgAoc4bwVj_kTrkViDiRw-nUcqlUsVL6w7eDaKFaCW8_4b6Pc9lkOIZTHM1VQ4h8Ca", currency: "USD" }}>
+            <Router>
+                <div className="app-wrapper">
+                    <Toaster position="top-right" richColors />
+                    <Navbar />
+                    <main style={{ minHeight: '80vh' }}>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <Routes>
+                                <Route path="/" element={<Home />} />
+                                <Route path="/product/:id" element={<BookDetail />} />
+                                <Route path="/admin-login" element={<AdminLogin />} />
+                                <Route path="/secret" element={<SecretEntry />} />
+                                <Route path="/about" element={<About />} />
+                                <Route path="/admin" element={
+                                    <ProtectedRoute>
+                                        <AdminDashboard />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path="*" element={<Suspense fallback={null}><NotFound /></Suspense>} />
+                            </Routes>
+                        </Suspense>
+                    </main>
+                    <Footer />
+                </div>
+            </Router>
+        </PayPalScriptProvider>
     );
 }
 

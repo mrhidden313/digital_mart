@@ -4,6 +4,13 @@ import { MessageCircle, ArrowRight, Share2, Copy, Check } from 'lucide-react';
 import { WHATSAPP_NUMBER, BookContext } from '../context/BookContext';
 import { useContext, useState } from 'react';
 
+const truncateWords = (text, maxWords) => {
+    if (!text) return '';
+    const words = text.trim().split(/\s+/);
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(' ') + '...';
+};
+
 const BADGE_STYLES = {
     'New': { bg: 'linear-gradient(135deg, #06b6d4, #3b82f6)', icon: '✨' },
     'Hot': { bg: 'linear-gradient(135deg, #ef4444, #f97316)', icon: '🔥' },
@@ -138,11 +145,11 @@ const BookCard = ({ book, index = 0 }) => {
                 <div style={{ marginBottom: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
                     {book.category}
                 </div>
-                <h3 className="outfit" style={{ margin: '0 0 0.8rem 0', fontSize: '1.2rem', lineHeight: '1.3', color: 'white' }}>
-                    {book.title}
+                <h3 className="outfit" style={{ margin: '0 0 0.8rem 0', fontSize: '1.2rem', lineHeight: '1.3', color: 'var(--text-primary)' }}>
+                    {truncateWords(book.title, 6)}
                 </h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem', lineHeight: '1.5', flex: 1 }}>
-                    {book.excerpt}
+                    {truncateWords(book.excerpt, 10)}
                 </p>
 
                 <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -153,13 +160,13 @@ const BookCard = ({ book, index = 0 }) => {
                         {/* Share Button */}
                         <div style={{ position: 'relative' }}>
                             <button onClick={handleShare} style={{
-                                background: 'rgba(255,255,255,0.08)', border: '1px solid var(--glass-border)',
+                                background: 'rgba(0,0,0,0.03)', border: '1px solid var(--glass-border)',
                                 borderRadius: '8px', padding: '6px 8px', cursor: 'pointer', color: 'var(--text-muted)',
                                 display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem',
                                 transition: 'all 0.2s ease'
                             }}
-                                onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.15)'}
-                                onMouseLeave={e => e.target.style.background = 'rgba(255,255,255,0.08)'}
+                                onMouseEnter={e => e.target.style.background = 'rgba(0,0,0,0.08)'}
+                                onMouseLeave={e => e.target.style.background = 'rgba(0,0,0,0.03)'}
                             >
                                 <Share2 size={14} />
                             </button>
@@ -168,9 +175,9 @@ const BookCard = ({ book, index = 0 }) => {
                             {showShare && (
                                 <div style={{
                                     position: 'absolute', bottom: '100%', right: 0, marginBottom: '6px',
-                                    background: 'rgba(15,23,42,0.95)', border: '1px solid var(--glass-border)',
+                                    background: 'rgba(255,255,255,0.95)', border: '1px solid var(--glass-border)',
                                     borderRadius: '10px', padding: '6px', minWidth: '150px', zIndex: 50,
-                                    boxShadow: '0 8px 24px rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)'
+                                    boxShadow: 'var(--card-shadow)', backdropFilter: 'blur(12px)'
                                 }}>
                                     <button onClick={handleWhatsAppShare} style={{
                                         width: '100%', padding: '8px 10px', background: 'none', border: 'none',
@@ -213,16 +220,15 @@ const BookCard = ({ book, index = 0 }) => {
                         width: '100%',
                         padding: '0.7rem',
                         justifyContent: 'center',
-                        fontSize: '0.95rem',
-                        background: 'linear-gradient(45deg, var(--primary), var(--secondary))',
-                        border: 'none',
-                        borderRadius: '10px',
+                        fontSize: '0.9rem',
+                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
                         color: 'white',
+                        borderRadius: '10px',
+                        border: 'none',
                         fontWeight: '600',
-                        marginTop: '0',
-                        boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)'
+                        boxShadow: '0 4px 12px rgba(45, 212, 191, 0.25)'
                     }}>
-                        Read More <ArrowRight size={18} />
+                        Buy Now →
                     </Link>
                 </div>
             </div>

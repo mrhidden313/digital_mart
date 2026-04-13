@@ -82,7 +82,7 @@ const TrustWidget = () => {
                             key={i}
                             style={{
                                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                background: 'rgba(255,255,255,0.03)', padding: '0.5rem 0.7rem',
+                                background: 'rgba(0,0,0,0.03)', padding: '0.5rem 0.7rem',
                                 borderRadius: '10px', border: '1px solid var(--glass-border)',
                                 height: `${ITEM_HEIGHT - 8}px`, boxSizing: 'border-box',
                             }}

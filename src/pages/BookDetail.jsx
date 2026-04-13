@@ -3,6 +3,8 @@ import { useContext, useState, useEffect } from 'react';
 import { BookContext } from '../context/BookContext';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Calendar, Tag, Share2, MessageCircle, Copy, Check } from 'lucide-react';
+import { PayPalButtons } from '@paypal/react-paypal-js';
+import { toast } from 'sonner';
 import DOMPurify from 'dompurify';
 import SEO from '../components/SEO';
 import BookCard from '../components/BookCard';
@@ -11,6 +13,9 @@ const BookDetail = () => {
     const { id } = useParams();
     const { books, whatsappNumber, whatsappGroup } = useContext(BookContext);
     const book = books.find(b => String(b.id) === String(id));
+
+    const [purchaseComplete, setPurchaseComplete] = useState(false);
+    const [checkoutOrderId, setCheckoutOrderId] = useState(null);
 
     const [countdown, setCountdown] = useState(15);
     const [canDownload, setCanDownload] = useState(false);
@@ -55,18 +60,18 @@ const BookDetail = () => {
                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Calendar size={14} /> {book.date}</span>
                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Tag size={14} /> {book.category}</span>
                     </div>
-                    <h1 className="outfit" style={{ fontSize: 'clamp(1.5rem, 4vw, 3rem)', color: 'white', marginBottom: '1.5rem' }}>{book.title}</h1>
+                    <h1 className="outfit" style={{ fontSize: 'clamp(1.5rem, 4vw, 3rem)', color: 'var(--text-primary)', marginBottom: '1.5rem' }}>{book.title}</h1>
                     <img src={book.image} alt={book.title} loading="lazy" style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '16px' }} />
                 </header>
 
                 <div
                     className="blog-content"
-                    style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', color: '#e2e8f0', lineHeight: '1.8' }}
+                    style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', color: 'var(--text-primary)', lineHeight: '1.8' }}
                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(book.content, { ADD_ATTR: ['target', 'class', 'style'] }) }}
                 />
 
                 {/* Action Area */}
-                <div style={{ marginTop: '3rem', padding: 'clamp(1.2rem, 3vw, 3rem)', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: '1px solid var(--glass-border)', textAlign: 'center' }}>
+                <div style={{ marginTop: '3rem', padding: 'clamp(1.2rem, 3vw, 3rem)', background: 'rgba(0,0,0,0.02)', borderRadius: '20px', border: '1px solid var(--glass-border)', textAlign: 'center' }}>
                     {book.type === 'paid' ? (
                         <>
                             <h2 className="outfit" style={{ marginBottom: '1rem' }}>Unlock Premium Access</h2>
@@ -74,15 +79,64 @@ const BookDetail = () => {
                                 Get instant access to {book.title} with full warranty and support.
                             </p>
 
-                            <a
-                                href={whatsappLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn whatsapp-btn"
-                                style={{ width: '100%', maxWidth: '400px', margin: '0 auto', justifyContent: 'center', padding: '1rem', fontSize: '1.1rem', marginBottom: '1rem', boxShadow: '0 0 20px rgba(37,211,102,0.2)' }}
-                            >
-                                Claim Deal
-                            </a>
+                            {purchaseComplete ? (
+                                <div style={{ padding: '2rem', background: 'rgba(22, 163, 74, 0.1)', border: '1px solid var(--accent-green)', borderRadius: '16px', color: 'var(--text-primary)' }}>
+                                    <h3 style={{ color: 'var(--accent-green)', marginBottom: '1rem' }}>Payment Successful!</h3>
+                                    <p>Your payment (Order ID: {checkoutOrderId}) is confirmed. Access your product below:</p>
+                                    {book.downloadUrl ? (
+                                        <a href={book.downloadUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ marginTop: '1rem' }}>
+                                            Access Premium Content
+                                        </a>
+                                    ) : (
+                                        <p style={{ marginTop: '1rem', color: 'var(--accent-gold)' }}>Contact support on WhatsApp to receive your automated file.</p>
+                                    )}
+                                </div>
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px', margin: '0 auto' }}>
+                                    <div style={{ background: 'white', padding: '0.5rem', borderRadius: '8px' }}>
+                                        <PayPalButtons
+                                            style={{ layout: "vertical", shape: "rect" }}
+                                            createOrder={(data, actions) => {
+                                                const priceStr = String(book.price || '10').replace(/[^0-9.]/g, '');
+                                                const finalPrice = parseFloat(priceStr) || 10;
+                                                return actions.order.create({
+                                                    purchase_units: [
+                                                        {
+                                                            description: book.title,
+                                                            amount: { value: finalPrice.toString() },
+                                                        },
+                                                    ],
+                                                });
+                                            }}
+                                            onApprove={async (data, actions) => {
+                                                try {
+                                                    const order = await actions.order.capture();
+                                                    toast.success("Transaction completed successfully!");
+                                                    setCheckoutOrderId(order.id);
+                                                    setPurchaseComplete(true);
+                                                } catch (err) {
+                                                    toast.error("Transaction failed during capture.");
+                                                }
+                                            }}
+                                            onError={(err) => {
+                                                toast.error("PayPal encountered an error. Try again.");
+                                            }}
+                                        />
+                                    </div>
+
+                                    <a href={`https://wa.me/923301980891?text=${encodeURIComponent(`hello dear i want to acces ${book.title} with crypto payment method`)}`} 
+                                       target="_blank" rel="noopener noreferrer" 
+                                       className="btn" style={{ width: '100%', padding: '0.8rem', background: '#F7931A', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', justifyContent: 'center' }}>
+                                        Pay with Crypto
+                                    </a>
+
+                                    <a href={`https://wa.me/923215150976?text=${encodeURIComponent(`hello dear i want to acces ${book.title} with easypaisa payment method`)}`} 
+                                       target="_blank" rel="noopener noreferrer" 
+                                       className="btn" style={{ width: '100%', padding: '0.8rem', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', justifyContent: 'center' }}>
+                                        Pay with Easypaisa
+                                    </a>
+                                </div>
+                            )}
                         </>
                     ) : (
                         <>
@@ -138,7 +192,7 @@ const BookDetail = () => {
                         setTimeout(() => setCopied(false), 2000);
                     }} style={{
                         padding: '0.6rem 1.2rem', borderRadius: '10px', border: '1px solid var(--glass-border)',
-                        background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', cursor: 'pointer',
+                        background: 'rgba(0,0,0,0.05)', color: 'var(--text-muted)', cursor: 'pointer',
                         display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: '500'
                     }}>
                         {copied ? <><Check size={16} /> Copied!</> : <><Copy size={16} /> Copy Link</>}
@@ -148,7 +202,7 @@ const BookDetail = () => {
                             navigator.share({ title: book.title, text: book.excerpt || book.title, url: window.location.href }).catch(() => { });
                         }} style={{
                             padding: '0.6rem 1.2rem', borderRadius: '10px', border: '1px solid var(--glass-border)',
-                            background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', cursor: 'pointer',
+                            background: 'rgba(0,0,0,0.05)', color: 'var(--text-muted)', cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: '500'
                         }}>
                             <Share2 size={16} /> Share

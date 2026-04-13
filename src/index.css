@@ -1,25 +1,25 @@
 :root {
-    --primary: #8b5cf6;
-    --primary-dark: #7c3aed;
-    --secondary: #059669;
-    --bg-dark: #020617;
-    --glass-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(139, 92, 246, 0.2);
+    --primary: #2dd4bf;
+    --primary-dark: #14b8a6;
+    --secondary: #0ea5e9;
+    --bg-dark: #0f172a;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(148, 163, 184, 0.1);
     --text-primary: #f8fafc;
     --text-muted: #94a3b8;
-    --accent-gold: #ec4899;
-    --accent-green: #14b8a6;
+    --accent-gold: #fbbf24;
+    --accent-green: #34d399;
     --font-inter: 'Inter', sans-serif;
     --font-outfit: 'Outfit', sans-serif;
+    --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
 }
 
-/* Light Mode */
-[data-theme="light"] {
-    --bg-dark: #f5f3ff;
-    --glass-bg: rgba(255, 255, 255, 0.8);
-    --glass-border: rgba(139, 92, 246, 0.15);
-    --text-primary: #0f172a;
-    --text-muted: #475569;
+[data-theme="dark"] {
+    --bg-dark: #020617;
+    --glass-bg: rgba(15, 23, 42, 0.7);
+    --glass-border: rgba(148, 163, 184, 0.1);
+    --text-primary: #ffffff;
+    --text-muted: #cbd5e1;
 }
 
 * {
@@ -35,6 +35,12 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    background-image: 
+        radial-gradient(white, rgba(255,255,255,.15) 2px, transparent 40px),
+        radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 30px),
+        radial-gradient(white, rgba(255,255,255,.05) 2px, transparent 40px);
+    background-size: 550px 550px, 350px 350px, 250px 250px;
+    background-position: 0 0, 40px 60px, 130px 270px;
 }
 
 h1,
@@ -53,33 +59,35 @@ h4,
 
 .glass-panel {
     background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-shadow: var(--card-shadow);
+    border-radius: 20px;
 }
 
 @media (max-width: 768px) {
     .glass-panel {
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background: rgba(10, 10, 20, 0.95);
-        /* Solid dark fallback */
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        background: var(--glass-bg);
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
     }
 }
 
 .btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 10px;
+    padding: 0.65rem 1.7rem;
+    border-radius: 9999px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     border: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .btn-primary {
@@ -89,7 +97,7 @@ h4,
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(22, 163, 74, 0.4);
+    box-shadow: 0 8px 20px rgba(20, 184, 166, 0.3);
 }
 
 /* Animations */
@@ -206,15 +214,47 @@ textarea:focus {
 
 /* Card Hover Glow */
 .glass-panel:hover {
-    border-color: rgba(22, 163, 74, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(22, 163, 74, 0.15);
+    border-color: rgba(45, 212, 191, 0.3); /* Neon teal border on hover */
+    box-shadow: 0 15px 35px rgba(45, 212, 191, 0.1);
 }
 
-/* Animated Background Gradient */
+/* Category Grid Item Styles */
+.category-pill-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 0.8rem;
+}
+
+.category-pill-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px rgba(45, 212, 191, 0.15);
+}
+
+.category-pill-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    background: rgba(45, 212, 191, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+}
+
+/* Static Background Gradient (Animation Removed for Performance) */
 .animated-bg {
-    background: linear-gradient(-45deg, #0a0a0c, #0a1f0c, #0c2a1a, #0f3d1e);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background: linear-gradient(-45deg, #F9FAFB, #F3F4F6, #F8FAFC, #FFFFFF);
+    background-size: 100% 100%;
 }
 
 @keyframes gradientBG {
@@ -302,16 +342,17 @@ textarea:focus {
     }
 
     h1 {
-        font-size: 1.8rem !important;
+        font-size: 1.5rem !important;
     }
 
     h2 {
-        font-size: 1.3rem !important;
+        font-size: 1.15rem !important;
     }
 
     .btn {
-        padding: 0.6rem 1rem;
-        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        border-radius: 9999px;
     }
 }
 
@@ -330,6 +371,12 @@ textarea:focus {
         display: flex !important;
     }
 
+    /* Icons adjustment for mobile */
+    svg {
+        transform: scale(0.9);
+        transform-origin: center;
+    }
+
     .nav-mobile-menu {
         display: flex !important;
     }
@@ -344,7 +391,30 @@ textarea:focus {
     }
 
     .books-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.6rem !important;
+    }
+    
+    /* Make card elements smaller to fit 2 side-by-side cleanly */
+    .book-card .card-img {
+        height: 120px !important;
+    }
+    .book-card h3 {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.4rem !important;
+        line-height: 1.2 !important;
+    }
+    .book-card p {
+        font-size: 0.7rem !important;
+        margin-bottom: 0.5rem !important;
+        line-height: 1.3 !important;
+    }
+    .book-card .btn {
+        padding: 0.4rem !important;
+        font-size: 0.75rem !important;
+    }
+    .book-card > div:last-child {
+        padding: 0.8rem !important;
     }
 
     /* Admin dashboard - stack */
@@ -391,8 +461,8 @@ textarea:focus {
 
 /* Select dropdown fix for dark mode on all screens */
 select option {
-    background: #1a1a2e;
-    color: white;
+    background: var(--bg-dark);
+    color: var(--text-primary);
 }
 
 /* Category Tabs */
@@ -414,7 +484,7 @@ select option {
 .blog-content h6 {
     margin-top: 1.5em;
     margin-bottom: 0.5em;
-    color: white;
+    color: var(--text-primary);
     line-height: 1.3;
 }
 
