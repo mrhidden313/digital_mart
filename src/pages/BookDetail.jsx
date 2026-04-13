@@ -95,7 +95,7 @@ Please send me the access/delivery. Thank you!`;
                     {book.type === 'paid' ? (
                         <>
                             <h2 className="outfit" style={{ marginBottom: '1rem' }}>Unlock Premium Access</h2>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-gold)', marginBottom: '1rem' }}>
+                            <div style={{ fontSize: 'clamp(1.2rem, 5vw, 1.5rem)', fontWeight: 'bold', color: 'var(--accent-gold)', marginBottom: '1rem' }}>
                                 {formatDualPrice(book.price, book.type)}
                             </div>
                             <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', maxWidth: '500px', margin: '0 auto 1.5rem' }}>
