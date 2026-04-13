@@ -543,6 +543,22 @@ const AdminDashboard = () => {
             {/* SETTINGS TAB */}
             {activeTab === 'settings' && (
                 <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '18px' }}>
+                    {/* PayPal Settings */}
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <h4 style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--primary)', fontSize: '0.9rem' }}><Layout size={14} /> PayPal Client ID</h4>
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                            <input placeholder="Enter PayPal Client ID" value={tempPaypalId} onChange={e => setTempPaypalId(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+                            <button onClick={async () => { await updateGlobalSettings({ paypalClientId: tempPaypalId }); toast.success('PayPal ID saved!'); }} className="btn btn-primary" style={{ padding: '0.4rem 0.7rem' }}>Save</button>
+                        </div>
+                    </div>
+
+                    {/* WhatsApp Number Settings */}
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <h4 style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#25D366', fontSize: '0.9rem' }}><MessageCircle size={14} /> Official WhatsApp Number</h4>
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                            <input placeholder="923xxxxxxxxx" value={tempWhatsapp} onChange={e => setTempWhatsapp(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+                            <button onClick={async () => { await updateGlobalSettings({ whatsappNumber: tempWhatsapp }); toast.success('WhatsApp number saved!'); }} className="btn whatsapp-btn" style={{ padding: '0.4rem 0.7rem' }}><MessageCircle size={14} /></button>
+                        </div>
                         <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>With country code, no + sign</p>
                     </div>
 
@@ -551,17 +567,17 @@ const AdminDashboard = () => {
                         <h4 style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#25D366', fontSize: '0.9rem' }}><MessageCircle size={14} /> WhatsApp Group Link</h4>
                         <div style={{ display: 'flex', gap: '0.4rem' }}>
                             <input placeholder="https://chat.whatsapp.com/..." value={tempGroupLink} onChange={e => setTempGroupLink(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                            <button onClick={() => { updateWhatsappGroup(tempGroupLink); toast.success('Group link saved!'); }} className="btn whatsapp-btn" style={{ padding: '0.4rem 0.7rem' }}><MessageCircle size={14} /></button>
+                            <button onClick={async () => { await updateGlobalSettings({ whatsappGroup: tempGroupLink }); toast.success('Group link saved!'); }} className="btn whatsapp-btn" style={{ padding: '0.4rem 0.7rem' }}><MessageCircle size={14} /></button>
                         </div>
                         <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Shows on About page. Leave empty to hide.</p>
                     </div>
 
                     {/* Logo */}
-                    <div>
-                        <h4 style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem' }}><Layout size={14} /> Logo</h4>
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <h4 style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem' }}><ImageIcon size={14} /> Logo</h4>
                         <div style={{ display: 'flex', gap: '0.4rem' }}>
                             <input placeholder="Logo Image URL" value={tempLogo} onChange={e => setTempLogo(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                            <button onClick={() => { updateLogo(tempLogo); toast.success('Logo saved'); }} className="btn btn-primary" style={{ padding: '0.4rem 0.7rem' }}><ImageIcon size={14} /></button>
+                            <button onClick={async () => { await updateGlobalSettings({ logo: tempLogo }); toast.success('Logo saved'); }} className="btn btn-primary" style={{ padding: '0.4rem 0.7rem' }}><ImageIcon size={14} /></button>
                         </div>
                     </div>
 
