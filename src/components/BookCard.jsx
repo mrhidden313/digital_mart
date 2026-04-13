@@ -58,18 +58,18 @@ const BookCard = ({ book, index = 0 }) => {
         setShowShare(false);
     };
 
-    // Subtle left/right slide only — lightweight
-    const fromX = index % 2 === 0 ? -20 : 20;
+    // extremely lightweight — reduced movement by 60%+
+    const fromX = index % 2 === 0 ? -8 : 8;
     const badge = BADGE_STYLES[book.badge];
 
     return (
         <motion.div
             initial={{ opacity: 0, x: fromX }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            whileHover={{ y: -4, boxShadow: '0 10px 25px rgba(45, 212, 191, 0.15)' }}
-            whileTap={{ scale: 0.98 }}
+            viewport={{ once: true, margin: "-20px" }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            whileHover={{ y: -1.5, boxShadow: '0 5px 15px rgba(45, 212, 191, 0.1)' }}
+            whileTap={{ scale: 0.99 }}
             className="book-card glass-panel"
             style={{
                 borderRadius: '16px',
@@ -137,12 +137,9 @@ const BookCard = ({ book, index = 0 }) => {
                 <div style={{ marginBottom: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
                     {book.category}
                 </div>
-                <h3 className="outfit" style={{ margin: '0 0 0.8rem 0', fontSize: '1.2rem', lineHeight: '1.3', color: 'var(--text-primary)' }}>
-                    {truncateWords(book.title, 6)}
+                <h3 className="outfit" style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', lineHeight: '1.3', color: 'var(--text-primary)', flex: 1 }}>
+                    {truncateWords(book.title, 8)}
                 </h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem', lineHeight: '1.5', flex: 1 }}>
-                    {truncateWords(book.excerpt, 10)}
-                </p>
 
                 <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>

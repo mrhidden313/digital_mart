@@ -242,7 +242,6 @@ const AdminDashboard = () => {
                         </div>
 
                         <input placeholder="Product Title (e.g. NordVPN 1 Year)" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} style={inputStyle} />
-                        <input placeholder="Short Tagline / Excerpt" value={formData.excerpt} onChange={e => setFormData({ ...formData, excerpt: e.target.value })} style={inputStyle} />
 
                         {/* Image Selection */}
                         <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
