@@ -82,7 +82,7 @@ const TrustWidget = () => {
                             key={i}
                             style={{
                                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                background: 'rgba(0,0,0,0.03)', padding: '0.5rem 0.7rem',
+                                background: 'rgba(128, 128, 128, 0.08)', padding: '0.5rem 0.7rem',
                                 borderRadius: '10px', border: '1px solid var(--glass-border)',
                                 height: `${ITEM_HEIGHT - 8}px`, boxSizing: 'border-box',
                             }}
@@ -118,7 +118,7 @@ const TrustWidget = () => {
                     {[1, 2, 3, 4, 5].map(n => (
                         <div key={n} style={{
                             width: '22px', height: '22px', borderRadius: '50%',
-                            border: '2px solid var(--bg-dark)', background: '#333',
+                            border: '2px solid var(--bg-page)', background: '#333',
                             overflow: 'hidden', marginLeft: n > 1 ? '-8px' : 0
                         }}>
                             <img src={`https://i.pravatar.cc/50?u=influencer${n}`} alt="user" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -126,7 +126,7 @@ const TrustWidget = () => {
                     ))}
                     <div style={{
                         width: '22px', height: '22px', borderRadius: '50%',
-                        border: '2px solid var(--bg-dark)', background: 'var(--primary)',
+                        border: '2px solid var(--bg-page)', background: 'var(--primary)',
                         color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: '0.55rem', fontWeight: 'bold', marginLeft: '-8px'
                     }}>

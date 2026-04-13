@@ -149,7 +149,7 @@ const BookCard = ({ book, index = 0 }) => {
                         {/* Share Button */}
                         <div style={{ position: 'relative' }}>
                             <button onClick={handleShare} style={{
-                                background: 'rgba(0,0,0,0.03)', border: '1px solid var(--glass-border)',
+                                background: 'rgba(128,128,128,0.08)', border: '1px solid var(--glass-border)',
                                 borderRadius: '8px', padding: '6px 8px', cursor: 'pointer', color: 'var(--text-muted)',
                                 display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem',
                                 transition: 'all 0.2s ease'
@@ -164,7 +164,7 @@ const BookCard = ({ book, index = 0 }) => {
                             {showShare && (
                                 <div style={{
                                     position: 'absolute', bottom: '100%', right: 0, marginBottom: '6px',
-                                    background: 'rgba(255,255,255,0.95)', border: '1px solid var(--glass-border)',
+                                    background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
                                     borderRadius: '10px', padding: '6px', minWidth: '150px', zIndex: 50,
                                     boxShadow: 'var(--card-shadow)', backdropFilter: 'blur(12px)'
                                 }}>

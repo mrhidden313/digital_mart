@@ -25,7 +25,7 @@ const Loader = ({ fullScreen = true }) => {
             top: 0, left: 0,
             width: '100%',
             height: fullScreen ? '100vh' : '400px',
-            background: fullScreen ? 'var(--bg-dark)' : 'transparent',
+            background: fullScreen ? 'var(--bg-page)' : 'transparent',
             zIndex: fullScreen ? 9999 : 10,
             display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'
         }}>
@@ -34,7 +34,7 @@ const Loader = ({ fullScreen = true }) => {
                     {/* Background Track */}
                     <circle
                         cx="40" cy="40" r={radius}
-                        stroke="rgba(255, 255, 255, 0.1)"
+                        stroke="var(--glass-border)"
                         strokeWidth="6"
                         fill="transparent"
                     />
@@ -57,7 +57,7 @@ const Loader = ({ fullScreen = true }) => {
                     position: 'absolute', top: '50%', left: '50%',
                     transform: 'translate(-50%, -50%)',
                     fontFamily: 'var(--font-outfit)',
-                    fontWeight: 'bold', fontSize: '1.1rem', color: 'white'
+                    fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--text-primary)'
                 }}>
                     {Math.round(progress)}%
                 </div>

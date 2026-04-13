@@ -2,24 +2,39 @@
     --primary: #2dd4bf;
     --primary-dark: #14b8a6;
     --secondary: #0ea5e9;
-    --bg-dark: #0f172a;
-    --glass-bg: rgba(30, 41, 59, 0.7);
+    
+    /* DEFAULT DARK THEME */
+    --bg-page: #020617;
+    --glass-bg: rgba(15, 23, 42, 0.7);
     --glass-border: rgba(148, 163, 184, 0.1);
     --text-primary: #f8fafc;
     --text-muted: #94a3b8;
+    --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+    --card-bg: rgba(30, 41, 59, 0.4);
+    
     --accent-gold: #fbbf24;
     --accent-green: #34d399;
     --font-inter: 'Inter', sans-serif;
     --font-outfit: 'Outfit', sans-serif;
-    --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] {
+    --bg-page: #f8fafc;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(15, 23, 42, 0.08);
+    --text-primary: #0f172a;
+    --text-muted: #64748b;
+    --card-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+    --card-bg: rgba(255, 255, 255, 0.6);
 }
 
 [data-theme="dark"] {
-    --bg-dark: #020617;
+    --bg-page: #020617;
     --glass-bg: rgba(15, 23, 42, 0.7);
     --glass-border: rgba(148, 163, 184, 0.1);
     --text-primary: #ffffff;
     --text-muted: #cbd5e1;
+    --card-bg: rgba(30, 41, 59, 0.4);
 }
 
 * {
@@ -29,12 +44,16 @@
 }
 
 body {
-    background-color: var(--bg-dark);
+    background-color: var(--bg-page);
     color: var(--text-primary);
     font-family: var(--font-inter);
     line-height: 1.6;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] body {
     background-image: 
         radial-gradient(white, rgba(255,255,255,.15) 2px, transparent 40px),
         radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 30px),
@@ -64,6 +83,7 @@ h4,
     border: 1px solid var(--glass-border);
     box-shadow: var(--card-shadow);
     border-radius: 20px;
+    transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
 }
 
 @media (max-width: 768px) {

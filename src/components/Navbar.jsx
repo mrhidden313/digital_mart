@@ -10,11 +10,14 @@ const Navbar = () => {
     const location = useLocation();
     const isHome = location.pathname === '/';
 
-    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+    const storedTheme = localStorage.getItem('theme') || 'dark';
+    const [theme, setTheme] = useState(storedTheme);
+    
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
     }, [theme]);
+    
     const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
     return (
@@ -69,7 +72,7 @@ const Navbar = () => {
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <button onClick={toggleTheme} style={{
-                        background: 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)',
+                        background: 'rgba(128, 128, 128, 0.1)', border: '1px solid var(--glass-border)',
                         borderRadius: '8px', padding: '6px', cursor: 'pointer', color: 'var(--text-muted)',
                         display: 'flex', alignItems: 'center', transition: 'all 0.3s ease'
                     }}>
