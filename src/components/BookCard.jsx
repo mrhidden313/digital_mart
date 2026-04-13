@@ -139,25 +139,39 @@ const BookCard = ({ book, index = 0 }) => {
                 </div>
                 <h3 className="outfit" style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', lineHeight: '1.3', color: 'var(--text-primary)', flex: 1 }}>
                     {truncateWords(book.title, 8)}
-                </h3>
+                <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        {/* Price Label Pill */}
+                        <div style={{
+                            padding: '4px 12px',
+                            background: 'rgba(128, 128, 128, 0.05)',
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '20px',
+                            display: 'inline-flex',
+                            alignItems: 'center'
+                        }}>
+                            <span style={{ 
+                                fontSize: 'clamp(0.75rem, 3vw, 0.85rem)', 
+                                fontWeight: '800', 
+                                color: book.type === 'paid' ? 'var(--accent-gold)' : 'var(--secondary)',
+                                letterSpacing: '0.5px'
+                            }}>
+                                {formatDualPrice(book.price, book.type)}
+                            </span>
+                        </div>
 
-                <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <span style={{ fontSize: 'clamp(1.0rem, 4vw, 1.2rem)', fontWeight: '700', color: book.type === 'paid' ? 'var(--accent-gold)' : 'var(--secondary)' }}>
-                            {formatDualPrice(book.price, book.type)}
-                        </span>
                         {/* Share Button */}
                         <div style={{ position: 'relative' }}>
                             <button onClick={handleShare} style={{
-                                background: 'rgba(128,128,128,0.08)', border: '1px solid var(--glass-border)',
+                                background: 'rgba(128,128,128,0.05)', border: '1px solid var(--glass-border)',
                                 borderRadius: '8px', padding: '6px 8px', cursor: 'pointer', color: 'var(--text-muted)',
                                 display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem',
                                 transition: 'all 0.2s ease'
                             }}
-                                onMouseEnter={e => e.target.style.background = 'rgba(0,0,0,0.08)'}
-                                onMouseLeave={e => e.target.style.background = 'rgba(0,0,0,0.03)'}
+                                onMouseEnter={e => e.target.style.background = 'rgba(128,128,128,0.1)'}
+                                onMouseLeave={e => e.target.style.background = 'rgba(128,128,128,0.05)'}
                             >
-                                <Share2 size={14} />
+                                <Share2 size={13} />
                             </button>
 
                             {/* Share Dropdown */}
@@ -188,36 +202,35 @@ const BookCard = ({ book, index = 0 }) => {
                                     >
                                         {copied ? <><Check size={14} /> Copied!</> : <><Copy size={14} /> Copy Link</>}
                                     </button>
-                                    {navigator.share && (
-                                        <button onClick={handleNativeShare} style={{
-                                            width: '100%', padding: '8px 10px', background: 'none', border: 'none',
-                                            color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center',
-                                            gap: '8px', fontSize: '0.8rem', borderRadius: '6px',
-                                        }}
-                                            onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.05)'}
-                                            onMouseLeave={e => e.target.style.background = 'none'}
-                                        >
-                                            <Share2 size={14} /> More...
-                                        </button>
-                                    )}
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    <Link to={`/product/${book.id}`} className="btn" style={{
-                        width: '100%',
-                        padding: '0.7rem',
-                        justifyContent: 'center',
-                        fontSize: '0.9rem',
-                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                        color: 'white',
-                        borderRadius: '10px',
-                        border: 'none',
-                        fontWeight: '600',
-                        boxShadow: '0 4px 12px rgba(45, 212, 191, 0.25)'
-                    }}>
-                        Buy Now →
+                    <Link 
+                        to={`/product/${book.id}`} 
+                        className="btn" 
+                        style={{
+                            width: '100%',
+                            padding: '0.73rem',
+                            justifyContent: 'center',
+                            fontSize: '0.82rem',
+                            background: book.type === 'free' 
+                                ? 'linear-gradient(135deg, #22c55e, #10b981)' 
+                                : 'linear-gradient(135deg, #f97316, #ea580c)',
+                            color: 'white',
+                            borderRadius: '12px',
+                            border: 'none',
+                            fontWeight: '800',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.8px',
+                            boxShadow: book.type === 'free' 
+                                ? '0 4px 15px rgba(34, 197, 94, 0.25)' 
+                                : '0 4px 15px rgba(249, 115, 22, 0.25)',
+                            transition: 'all 0.2s ease'
+                        }}
+                    >
+                        {book.type === 'free' ? 'Get Now' : 'Buy Now'} →
                     </Link>
                 </div>
             </div>
