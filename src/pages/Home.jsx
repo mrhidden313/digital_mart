@@ -225,10 +225,25 @@ const Home = () => {
                         <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
                             <button 
                                 onClick={() => navigate('/store')} 
-                                className="btn btn-primary" 
-                                style={{ padding: '0.8rem 2.5rem', borderRadius: '12px', fontSize: '1rem', fontWeight: '600', boxShadow: '0 8px 25px var(--glow-primary)' }}
+                                className="btn" 
+                                style={{ 
+                                    padding: '1.2rem 3.5rem', 
+                                    borderRadius: '16px', 
+                                    fontSize: '1.2rem', 
+                                    fontWeight: '800', 
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '1px',
+                                    background: 'linear-gradient(135deg, #ec4899, #db2777)', 
+                                    color: 'white',
+                                    border: 'none',
+                                    boxShadow: '0 10px 30px rgba(236, 72, 153, 0.4)',
+                                    cursor: 'pointer',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '10px'
+                                }}
                             >
-                                Explore Entire Store <ArrowUpRight size={18} />
+                                EXPLORE FULL STORE <ArrowUpRight size={24} />
                             </button>
                         </div>
                     )}
