@@ -3,7 +3,7 @@ import { useContext, useState, useEffect } from 'react';
 import { BookContext } from '../context/BookContext';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Calendar, Tag, Share2, MessageCircle, Copy, Check } from 'lucide-react';
-import { PayPalButtons } from '@paypal/react-paypal-js';
+
 import { toast } from 'sonner';
 import DOMPurify from 'dompurify';
 import SEO from '../components/SEO';
@@ -13,10 +13,6 @@ const BookDetail = () => {
     const { id } = useParams();
     const { books, whatsappNumber, whatsappGroup, formatDualPrice, getUsdAmount, cryptoNumber, easypaisaNumber } = useContext(BookContext);
     const book = books.find(b => String(b.id) === String(id));
-
-    const [purchaseComplete, setPurchaseComplete] = useState(false);
-    const [checkoutOrderId, setCheckoutOrderId] = useState(null);
-    const [redirectTimer, setRedirectTimer] = useState(5);
 
     const [countdown, setCountdown] = useState(15);
     const [canDownload, setCanDownload] = useState(false);
@@ -31,25 +27,6 @@ const BookDetail = () => {
             setCanDownload(true);
         }
     }, [countdown, book]);
-
-    // Auto WhatsApp redirect after payment
-    useEffect(() => {
-        if (!purchaseComplete || !checkoutOrderId) return;
-        if (redirectTimer <= 0) {
-            const msg = `✅ Payment Confirmed!
-
-Hello, I just paid for *${book?.title}* via PayPal.
-
-🧾 Transaction ID: ${checkoutOrderId}
-
-Please send me the access/delivery. Thank you!`;
-            const waNumber = whatsappNumber || '923301980891';
-            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-            return;
-        }
-        const t = setTimeout(() => setRedirectTimer(prev => prev - 1), 1000);
-        return () => clearTimeout(t);
-    }, [purchaseComplete, checkoutOrderId, redirectTimer]);
 
     if (!book) return <div className="container" style={{ padding: '8rem 0', textAlign: 'center' }}><h2>Product not found</h2><Link to="/" className="btn" style={{ marginTop: '1rem', display: 'inline-block' }}>Go Home</Link></div>;
 
@@ -136,39 +113,11 @@ Please send me the access/delivery. Thank you!`)}`}
                                 </motion.div>
                             ) : (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px', margin: '0 auto' }}>
-                                    <div style={{ background: 'white', padding: '0.5rem', borderRadius: '8px' }}>
-                                        <PayPalButtons
-                                            style={{ layout: "vertical", shape: "rect" }}
-                                            createOrder={(data, actions) => {
-                                                const finalUsdPrice = getUsdAmount(book.price);
-                                                // Safety fallback
-                                                const chargeAmount = parseFloat(finalUsdPrice) || 1.00;
-                                                
-                                                return actions.order.create({
-                                                    purchase_units: [
-                                                        {
-                                                            description: book.title,
-                                                            amount: { value: chargeAmount.toString() },
-                                                        },
-                                                    ],
-                                                });
-                                            }}
-                                            onApprove={async (data, actions) => {
-                                                try {
-                                                    const order = await actions.order.capture();
-                                                    toast.success("Payment successful! Redirecting to WhatsApp...");
-                                                    setCheckoutOrderId(order.id);
-                                                    setPurchaseComplete(true);
-                                                    setRedirectTimer(5);
-                                                } catch (err) {
-                                                    toast.error("Transaction failed during capture.");
-                                                }
-                                            }}
-                                            onError={(err) => {
-                                                toast.error("PayPal encountered an error. Try again.");
-                                            }}
-                                        />
-                                    </div>
+                                    <a href={`https://wa.me/${whatsappNumber || '923301980891'}?text=${encodeURIComponent(`Hello, I want to buy *${book.title}* via PayPal or Credit Card. Please share the payment details.`)}`} 
+                                       target="_blank" rel="noopener noreferrer" 
+                                       className="btn" style={{ width: '100%', padding: '0.8rem', background: 'linear-gradient(135deg, #003087, #009cde)', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', justifyContent: 'center' }}>
+                                        Pay with PayPal / Credit Card
+                                    </a>
 
                                     <a href={`https://wa.me/${cryptoNumber || '923301980891'}?text=${encodeURIComponent(`hello dear i want to acces ${book.title} with crypto payment method`)}`} 
                                        target="_blank" rel="noopener noreferrer" 
