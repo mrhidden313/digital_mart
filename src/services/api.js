@@ -14,8 +14,8 @@ const DEFAULT_ITEMS = [
     // ... items can be re-seeded if needed
 ];
 
-// Progressive Loading: 3 posts per batch
-const BATCH_SIZE = 3;
+// Progressive Loading: 2 posts per batch
+const BATCH_SIZE = 2;
 
 export const getBooks = async (lastDoc = null, filter = 'All') => {
     try {
