@@ -248,17 +248,6 @@ const Home = () => {
                         </div>
                     )}
 
-                    {/* Auto-Loading Indicator */}
-                    {loadingMore && (
-                        <div style={{ textAlign: 'center', padding: '1.5rem 0', color: 'var(--text-muted)' }}>
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                                style={{ display: 'inline-block', width: '24px', height: '24px', border: '2px solid var(--primary)', borderTopColor: 'transparent', borderRadius: '50%' }}
-                            />
-                            <p style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>Loading more products...</p>
-                        </div>
-                    )}
                     {!loading && filteredBooks.length > 0 && (() => {
                         const catBtn = categoryButtons[activeCategory] || {};
                         const bundleMsg = catBtn.message || `I want to buy all ${activeCategory} items bundle`;
