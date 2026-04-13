@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useContext, lazy, Suspense } from 'react';
-import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { BookContext } from './context/BookContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -27,36 +26,32 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-    const { paypalClientId } = useContext(BookContext);
-
     return (
-        <PayPalScriptProvider key={paypalClientId} options={{ "client-id": paypalClientId, currency: "USD" }}>
-            <Router>
-                <div className="app-wrapper">
-                    <Toaster position="top-right" richColors />
-                    <Navbar />
-                    <main style={{ minHeight: '80vh' }}>
-                        <Suspense fallback={<div>Loading...</div>}>
-                            <Routes>
-                                <Route path="/" element={<Home />} />
-                                <Route path="/product/:id" element={<BookDetail />} />
-                                <Route path="/admin-login" element={<AdminLogin />} />
-                                <Route path="/secret" element={<SecretEntry />} />
-                                <Route path="/about" element={<About />} />
-                                <Route path="/store" element={<Store />} />
-                                <Route path="/admin" element={
-                                    <ProtectedRoute>
-                                        <AdminDashboard />
-                                    </ProtectedRoute>
-                                } />
-                                <Route path="*" element={<Suspense fallback={null}><NotFound /></Suspense>} />
-                            </Routes>
-                        </Suspense>
-                    </main>
-                    <Footer />
-                </div>
-            </Router>
-        </PayPalScriptProvider>
+        <Router>
+            <div className="app-wrapper">
+                <Toaster position="top-right" richColors />
+                <Navbar />
+                <main style={{ minHeight: '80vh' }}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/product/:id" element={<BookDetail />} />
+                            <Route path="/admin-login" element={<AdminLogin />} />
+                            <Route path="/secret" element={<SecretEntry />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/store" element={<Store />} />
+                            <Route path="/admin" element={
+                                <ProtectedRoute>
+                                    <AdminDashboard />
+                                </ProtectedRoute>
+                            } />
+                            <Route path="*" element={<Suspense fallback={null}><NotFound /></Suspense>} />
+                        </Routes>
+                    </Suspense>
+                </main>
+                <Footer />
+            </div>
+        </Router>
     );
 }
 

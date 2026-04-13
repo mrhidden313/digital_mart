@@ -40,7 +40,6 @@ export const BookProvider = ({ children }) => {
     const [whatsappNumber, setWhatsappNumber] = useState('923301980891');
     const [cryptoNumber, setCryptoNumber] = useState('923301980891');
     const [easypaisaNumber, setEasypaisaNumber] = useState('923215150976');
-    const [paypalClientId, setPaypalClientId] = useState('AeI8Vu0mk6h94MwgAoc4bwVj_kTrkViDiRw-nUcqlUsVL6w7eDaKFaCW8_4b6Pc9lkOIZTHM1VQ4h8Ca');
     const [whatsappGroup, setWhatsappGroup] = useState('');
     const [categoryButtons, setCategoryButtons] = useState({});
     const [activeCategory, setActiveCategory] = useState('All');
@@ -168,7 +167,6 @@ export const BookProvider = ({ children }) => {
                 setWhatsappNumber(globalSettings.whatsappNumber || '923301980891');
                 setCryptoNumber(globalSettings.cryptoNumber || '923301980891');
                 setEasypaisaNumber(globalSettings.easypaisaNumber || '923215150976');
-                setPaypalClientId(globalSettings.paypalClientId || 'AeI8Vu0mk6h94MwgAoc4bwVj_kTrkViDiRw-nUcqlUsVL6w7eDaKFaCW8_4b6Pc9lkOIZTHM1VQ4h8Ca');
                 setLogo(globalSettings.logo || '/logo.png');
                 setWhatsappGroup(globalSettings.whatsappGroup || '');
             }
@@ -201,7 +199,6 @@ export const BookProvider = ({ children }) => {
             if (newSettings.whatsappNumber) setWhatsappNumber(newSettings.whatsappNumber);
             if (newSettings.cryptoNumber) setCryptoNumber(newSettings.cryptoNumber);
             if (newSettings.easypaisaNumber) setEasypaisaNumber(newSettings.easypaisaNumber);
-            if (newSettings.paypalClientId) setPaypalClientId(newSettings.paypalClientId);
             if (newSettings.logo) setLogo(newSettings.logo);
             if (newSettings.whatsappGroup) setWhatsappGroup(newSettings.whatsappGroup);
             return { success: true };
@@ -432,7 +429,7 @@ export const BookProvider = ({ children }) => {
             isAdmin, currentUser, authLoading, login, googleLogin, logout,
             logo, updateLogo,
             whatsappNumber, updateWhatsappNumber,
-            cryptoNumber, easypaisaNumber, paypalClientId, updateGlobalSettings,
+            cryptoNumber, easypaisaNumber, updateGlobalSettings,
             whatsappGroup, updateWhatsappGroup,
             categoryButtons, updateCategoryButton,
             activeCategory, setActiveCategory,

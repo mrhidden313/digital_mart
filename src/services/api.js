@@ -317,7 +317,7 @@ export const getGlobalSettingsAPI = async () => {
         return {
             whatsappNumber: '923301980891',
             whatsappGroup: '',
-            paypalClientId: 'AeI8Vu0mk6h94MwgAoc4bwVj_kTrkViDiRw-nUcqlUsVL6w7eDaKFaCW8_4b6Pc9lkOIZTHM1VQ4h8Ca',
+
             cryptoNumber: '923301980891',
             easypaisaNumber: '923215150976',
             logo: '/logo.png'

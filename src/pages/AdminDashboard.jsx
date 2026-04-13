@@ -46,7 +46,7 @@ const AdminDashboard = () => {
         whatsappGroup, updateWhatsappGroup, 
         categoryButtons, updateCategoryButton, 
         resetToDefaults, categories, customCategories, addCategory, deleteCategory, updateCategory,
-        cryptoNumber, easypaisaNumber, paypalClientId, updateGlobalSettings
+        cryptoNumber, easypaisaNumber, updateGlobalSettings
     } = useContext(BookContext);
     const [formData, setFormData] = useState({
         title: '', excerpt: '', content: '', image: '', category: categories[1] || 'Free', tags: '', type: 'free', author: 'Supermart', price: '', whatsappText: '', badge: ''
@@ -56,7 +56,6 @@ const AdminDashboard = () => {
     const [tempLogo, setTempLogo] = useState(logo || '');
     const [tempWhatsapp, setTempWhatsapp] = useState(whatsappNumber || '');
     const [tempGroupLink, setTempGroupLink] = useState(whatsappGroup || '');
-    const [tempPaypalId, setTempPaypalId] = useState(paypalClientId || '');
     const [tempCrypto, setTempCrypto] = useState(cryptoNumber || '');
     const [tempEasypaisa, setTempEasypaisa] = useState(easypaisaNumber || '');
     const [activeTab, setActiveTab] = useState('add');
@@ -543,15 +542,6 @@ const AdminDashboard = () => {
             {/* SETTINGS TAB */}
             {activeTab === 'settings' && (
                 <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '18px' }}>
-                    {/* PayPal Settings */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <h4 style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--primary)', fontSize: '0.9rem' }}><Layout size={14} /> PayPal Client ID</h4>
-                        <div style={{ display: 'flex', gap: '0.4rem' }}>
-                            <input placeholder="Enter PayPal Client ID" value={tempPaypalId} onChange={e => setTempPaypalId(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                            <button onClick={async () => { await updateGlobalSettings({ paypalClientId: tempPaypalId }); toast.success('PayPal ID saved!'); }} className="btn btn-primary" style={{ padding: '0.4rem 0.7rem' }}>Save</button>
-                        </div>
-                    </div>
-
                     {/* WhatsApp Number Settings */}
                     <div style={{ marginBottom: '1.5rem' }}>
                         <h4 style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#25D366', fontSize: '0.9rem' }}><MessageCircle size={14} /> Official WhatsApp Number</h4>
