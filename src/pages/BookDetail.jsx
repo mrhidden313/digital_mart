@@ -3,7 +3,7 @@ import { useContext, useState, useEffect } from 'react';
 import { BookContext } from '../context/BookContext';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Calendar, Tag, Share2, MessageCircle, Copy, Check } from 'lucide-react';
-import { ArrowLeft, Clock, Calendar, Tag, Share2, MessageCircle, Copy, Check } from 'lucide-react';
+
 import { toast } from 'sonner';
 import DOMPurify from 'dompurify';
 import SEO from '../components/SEO';
@@ -28,7 +28,7 @@ const BookDetail = () => {
         }
     }, [countdown, book]);
 
-    }, [countdown, book]);
+
 
     if (!book) return <div className="container" style={{ padding: '8rem 0', textAlign: 'center' }}><h2>Product not found</h2><Link to="/" className="btn" style={{ marginTop: '1rem', display: 'inline-block' }}>Go Home</Link></div>;
 
@@ -100,7 +100,6 @@ const BookDetail = () => {
                                         Pay with Easypaisa
                                     </a>
                                 </div>
-                            )}
                         </>
                     ) : (
                         <>
